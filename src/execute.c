@@ -14,7 +14,20 @@ void exec_clear_screen(State * s)
 
 void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
 {
-    
+    /* Sprite starts at the address pointed to by index register. */
+    address addr = s->i;
+
+    uint8_t x = s->registers[x_reg] / 8;
+    uint8_t y = s->registers[y_reg];
+
+    /* Draw the sprite. */
+    while (n > 0)
+    {
+        s->display[y][x] = s->memory[addr];
+        y++;
+        addr++;
+        n--;
+    }
 }
 
 /* Jumps to the given destination. */

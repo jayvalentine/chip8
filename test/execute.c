@@ -7,6 +7,7 @@
 #include "include/execute.h"
 
 #include "string.h"
+#include "stdio.h"
 
 /* Tests that executing the clear_screen instruction results in the display memory being cleared,
  * and the "display changed" flag being set.
@@ -122,6 +123,8 @@ TEST(draw_all_aligned)
 {
     State state;
 
+    memset(state.display, 0, sizeof(state.display));
+
     state.memory[42] = 0b11111111;
     state.memory[43] = 0b11111111;
     state.memory[44] = 0b11111111;
@@ -136,18 +139,21 @@ TEST(draw_all_aligned)
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 15; y++)
     {
+        fprintf(stderr, "y: %d, x: %d\n", y, 1);
         assert_uint8(0, ==, state.display[y][1]);
     }
 
     /* Check that the sprite bits have been set. */
     for (int y = 15; y < 18; y++)
     {
+        fprintf(stderr, "y: %d, x: %d\n", y, 1);
         assert_uint8(0b11111111, ==, state.display[y][1]);
     }
 
     /* Check that the bits below the sprite are unaffected. */
     for (int y = 18; y < DISPLAY_HEIGHT; y++)
     {
+        fprintf(stderr, "y: %d, x: %d\n", y, 1);
         assert_uint8(0, ==, state.display[y][1]);
     }
 
@@ -157,6 +163,7 @@ TEST(draw_all_aligned)
         for (int x = 0; x < (DISPLAY_WIDTH / 8); x++)
         {
             if (x == 1) continue;
+            fprintf(stderr, "y: %d, x: %d", y, x);
             assert_uint8(0, ==, state.display[y][x]);
         }
     }
