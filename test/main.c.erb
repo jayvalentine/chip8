@@ -49,6 +49,13 @@ int main(int argc, char * argv[])
 <% test_functions.each do |test_class, tests| %>
         suite_<%= test_class %>,
 <% end %>
+        {
+            NULL,
+            NULL,
+            NULL,
+            1,
+            MUNIT_SUITE_OPTION_NONE
+        }
     };
 
     MunitSuite suite_main =
@@ -60,5 +67,8 @@ int main(int argc, char * argv[])
         MUNIT_SUITE_OPTION_NONE
     };
 
-    return munit_suite_main(&suite_main, NULL, argc, argv);
+    int result = munit_suite_main(&suite_main, NULL, argc, argv);
+
+    if (result == EXIT_SUCCESS) return 0;
+    else return 1;
 }
