@@ -582,27 +582,27 @@ TEST(draw_checkerboard_switch_off_unaligned)
     return MUNIT_OK;
 }
 
-TEST(skip_eq_true)
+TEST(skip_eq_reg_true)
 {
     State state;
     
     state.registers[0xa] = 42;
     state.registers[0x2] = 42;
 
-    exec_skip_eq(&state, 0xa, 0x2);
+    exec_skip_eq_reg(&state, 0xa, 0x2);
     assert_true(state.skip_next);
 
     return MUNIT_OK;
 }
 
-TEST(skip_eq_false)
+TEST(skip_eq_reg_false)
 {
     State state;
     
     state.registers[0xd] = 42;
     state.registers[0x3] = 12;
 
-    exec_skip_eq(&state, 0x3, 0xd);
+    exec_skip_eq_reg(&state, 0x3, 0xd);
     assert_false(state.skip_next);
 
     return MUNIT_OK;

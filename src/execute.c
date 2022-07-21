@@ -112,7 +112,7 @@ void exec_jump(State * s, address destination)
 }
 
 /* Skips next instruction if VX == VY */
-void exec_skip_eq(State * s, uint8_t x, uint8_t y)
+void exec_skip_eq_reg(State * s, uint8_t x, uint8_t y)
 {
     s->skip_next = (s->registers[x] == s->registers[y]);
 }
