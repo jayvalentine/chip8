@@ -6,6 +6,9 @@ void decode(Instruction * instr, uint16_t opcode)
 
     switch (opcode_nibble)
     {
+        case 0x0:
+            instr->opcode = CLEAR;
+            break;
         case 0x1:
             instr->opcode = JUMP;
             instr->NNN = opcode & 0x0fff;

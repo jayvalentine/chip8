@@ -5,6 +5,7 @@
 
 typedef enum _Opcode
 {
+    CLEAR,
     JUMP
 } Opcode;
 

@@ -17,3 +17,15 @@ TEST(decode_jump)
 
     return MUNIT_OK;
 }
+
+TEST(decode_clear)
+{
+    uint16_t opcode = 0x00e0;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == CLEAR);
+
+    return MUNIT_OK;
+}
