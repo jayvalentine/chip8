@@ -92,6 +92,8 @@ int main(int argc, char ** argv)
     /* Set entry point of program. */
     s.pc = 0x200;
 
+    printf("\033[2J");
+
     /* Fetch/decode/execute cycle. */
     while (1)
     {
