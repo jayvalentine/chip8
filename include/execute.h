@@ -6,6 +6,7 @@
 /* Display control instructions. */
 
 void exec_clear_screen(State * s);
+void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n);
 
 /* Control flow instructions. */
 

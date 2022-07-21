@@ -12,6 +12,11 @@ void exec_clear_screen(State * s)
     s->display_changed = true;
 }
 
+void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
+{
+    
+}
+
 /* Jumps to the given destination. */
 void exec_jump(State * s, address destination)
 {
