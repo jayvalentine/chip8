@@ -2,6 +2,10 @@
 #define _EXECUTE_H
 
 #include "include/state.h"
+#include "include/decode.h"
+
+/* Execution entry point. */
+void execute(State * s, Instruction * i);
 
 /* Display control instructions. */
 

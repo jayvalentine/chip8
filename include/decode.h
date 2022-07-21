@@ -13,7 +13,9 @@ typedef enum _Opcode
     SET_REG_IMM,
     ADD_REG_IMM,
 
-    SET_INDEX_IMM
+    SET_INDEX_IMM,
+
+    UNKNOWN
 } Opcode;
 
 typedef struct _Instruction

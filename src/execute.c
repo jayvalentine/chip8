@@ -2,6 +2,36 @@
 
 #include "string.h"
 
+/* Entry point for execution. Determines the type of instruction
+ * and calls the relevant execution function.
+ */
+void execute(State * s, Instruction * i)
+{
+    switch (i->opcode)
+    {
+        case CLEAR:
+            exec_clear_screen(s);
+            break;
+        case DRAW:
+            exec_draw(s, i->X, i->Y, i->N);
+            break;
+        case JUMP:
+            exec_jump(s, i->NNN);
+            break;
+        case SET_REG_IMM:
+            exec_set_reg_imm(s, i->X, i->NN);
+            break;
+        case ADD_REG_IMM:
+            exec_add_reg_imm(s, i->X, i->NN);
+            break;
+        case SET_INDEX_IMM:
+            exec_set_index_imm(s, i->NNN);
+            break;
+        case UNKNOWN:
+            break;
+    }
+}
+
 /* Clears all bits in the display. */
 void exec_clear_screen(State * s)
 {

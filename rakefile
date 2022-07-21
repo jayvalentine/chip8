@@ -42,3 +42,10 @@ namespace 'test' do
         abort("Tests failed!") unless result
     end
 end
+
+task 'build' do
+    source_files = FileList.new("src/*.c")
+
+    result = system("gcc -Wall -Werror -I. -o chip8.exe #{source_files.join(" ")}")
+    abort("Build failed!") unless result
+end

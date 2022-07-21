@@ -19,7 +19,15 @@ void decode(Instruction * instr, uint16_t opcode)
     switch (opcode_nibble)
     {
         case 0x0:
-            instr->opcode = CLEAR;
+            switch (opcode)
+            {
+                case 0x00e0:
+                    instr->opcode = CLEAR;
+                    break;
+                default:
+                    instr->opcode = UNKNOWN;
+                    break;
+            }
             break;
         case 0x1:
             instr->opcode = JUMP;
@@ -40,6 +48,9 @@ void decode(Instruction * instr, uint16_t opcode)
         case 0xD:
             instr->opcode = DRAW;
             EXTRACT_XYN(instr, opcode);
+            break;
+        default:
+            instr->opcode = UNKNOWN;
             break;
     }
 }
