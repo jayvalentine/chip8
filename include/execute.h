@@ -18,6 +18,8 @@ void exec_jump(State * s, uint16_t destination);
 
 void exec_skip_eq_reg(State * s, uint8_t x, uint8_t y);
 void exec_skip_eq_imm(State * s, uint8_t x, uint8_t imm);
+void exec_skip_neq_reg(State * s, uint8_t x, uint8_t y);
+void exec_skip_neq_imm(State * s, uint8_t x, uint8_t imm);
 
 /* Arithmetic/logic instructions. */
 

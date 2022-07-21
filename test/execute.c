@@ -635,3 +635,57 @@ TEST(skip_eq_imm_false)
 
     return MUNIT_OK;
 }
+
+TEST(skip_neq_reg_true)
+{
+    State state;
+    
+    state.registers[0xa] = 42;
+    state.registers[0x2] = 99;
+    state.skip_next = false;
+
+    exec_skip_neq_reg(&state, 0xa, 0x2);
+    assert_true(state.skip_next);
+
+    return MUNIT_OK;
+}
+
+TEST(skip_neq_reg_false)
+{
+    State state;
+    
+    state.registers[0xd] = 42;
+    state.registers[0x3] = 42;
+    state.skip_next = false;
+
+    exec_skip_neq_reg(&state, 0x3, 0xd);
+    assert_false(state.skip_next);
+
+    return MUNIT_OK;
+}
+
+TEST(skip_neq_imm_true)
+{
+    State state;
+    
+    state.registers[0xa] = 42;
+    state.skip_next = false;
+
+    exec_skip_neq_imm(&state, 0xa, 12);
+    assert_true(state.skip_next);
+
+    return MUNIT_OK;
+}
+
+TEST(skip_neq_imm_false)
+{
+    State state;
+    
+    state.registers[0xd] = 42;
+    state.skip_next = false;
+
+    exec_skip_neq_imm(&state, 0x3, 42);
+    assert_false(state.skip_next);
+
+    return MUNIT_OK;
+}
