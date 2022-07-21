@@ -6,8 +6,11 @@ namespace 'test' do
 
         # Get a list of test functions.
         test_functions = {}
+        test_files = []
+
         Dir.glob('test/*.c').each do |c|
             test_class = File.basename(c, '.c')
+            test_files << c
 
             next if test_class == 'main'
 
@@ -26,9 +29,14 @@ namespace 'test' do
         renderer = ERB.new(File.read('test/main.c.erb'))
         File.write('test/main.c', renderer.result(binding))
 
+        source_files = FileList.new("src/*.c") do |fl|
+            fl.exclude "src/main.c"
+        end
+
         # Compile tests.
-        system("gcc -I. -o test.exe test/*.c")
+        system("gcc -I. -o test/unit.exe munit/munit.c #{source_files.join(" ")} #{test_files.join(" ")}")
 
         # Run tests.
+        system("./test/unit.exe")
     end
 end
