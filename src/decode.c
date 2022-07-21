@@ -30,10 +30,17 @@ void decode(Instruction * instr, uint16_t opcode)
                 case 0x00e0:
                     instr->opcode = CLEAR;
                     break;
+                case 0x00ee:
+                    instr->opcode = RETURN;
+                    break;
             }
             break;
         case 0x1:
             instr->opcode = JUMP;
+            EXTRACT_NNN(instr, opcode);
+            break;
+        case 0x2:
+            instr->opcode = CALL;
             EXTRACT_NNN(instr, opcode);
             break;
         case 0x3:
