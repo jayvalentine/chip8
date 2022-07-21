@@ -6,7 +6,7 @@
 void exec_clear_screen(State * s)
 {
     /* Clear the display. */
-    memset(s->display, 0, DISPLAY_SIZE);
+    memset(s->display, 0, sizeof(s->display));
 
     /* Mark the display as having changed. */
     s->display_changed = true;
@@ -15,5 +15,5 @@ void exec_clear_screen(State * s)
 /* Jumps to the given destination. */
 void exec_jump(State * s, address destination)
 {
-
+    s->pc = destination;
 }

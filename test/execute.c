@@ -15,7 +15,7 @@ TEST(clear_screen)
 {
     State state;
 
-    memset(state.display, 0, DISPLAY_SIZE);
+    memset(state.display, 0, sizeof(state.display));
     state.display_changed = false;
 
     state.display[4][2] = 160;
