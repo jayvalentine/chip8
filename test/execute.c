@@ -40,3 +40,29 @@ TEST(clear_screen)
 
     return MUNIT_OK;
 }
+
+TEST(jump)
+{
+    State state;
+
+    state.pc = 42;
+
+    exec_jump(&state, 123);
+
+    assert_uint16(123, ==, state.pc);
+
+    return MUNIT_OK;
+}
+
+TEST(jump_loop)
+{
+    State state;
+
+    state.pc = 99;
+
+    exec_jump(&state, 99);
+
+    assert_uint16(99, ==, state.pc);
+
+    return MUNIT_OK;
+}

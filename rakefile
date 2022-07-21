@@ -34,9 +34,11 @@ namespace 'test' do
         end
 
         # Compile tests.
-        system("gcc -I. -o test/unit.exe munit/munit.c #{source_files.join(" ")} #{test_files.join(" ")}")
+        result = system("gcc -Wall -Werror -I. -o test/unit.exe munit/munit.c #{source_files.join(" ")} #{test_files.join(" ")}")
+        abort("Compiling unit tests failed!") unless result
 
         # Run tests.
-        system("./test/unit.exe")
+        result = system("./test/unit.exe")
+        abort("Tests failed!") unless result
     end
 end

@@ -8,10 +8,12 @@
 #define DISPLAY_HEIGHT 32
 #define DISPLAY_SIZE (DISPLAY_HEIGHT * (DISPLAY_WIDTH / 8))
 
+typedef uint16_t address;
+
 /* Represents the emulator state. */
 typedef struct _State
 {
-    int pc;
+    address pc;
 
     /* Display memory.
      * Organized as 32 rows of 64 pixels.
