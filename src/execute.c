@@ -100,6 +100,9 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
         addr++;
         n--;
     }
+
+    /* Mark display as having changed. */
+    s->display_changed = true;
 }
 
 /* Jumps to the given destination. */
