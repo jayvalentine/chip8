@@ -14,15 +14,19 @@ MunitResult test_clear_screen(const MunitParameter params[], void* user_data_or_
 {
     State state;
 
-    memset(state.display, 0, sizeof(state.display));
+    memset(state.display, 0, DISPLAY_SIZE);
     state.display_changed = false;
+
+    state.display[4][2] = 160;
+    state.display[3][1] = 42;
+    state.display[31][7] = 99;
 
     exec_clear_screen(&state);
 
     /* Check that all bits in the display are now off. */
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
     {
-        for (int x = 0; x < (DISPLAY_WIDTH / 8); y++)
+        for (int x = 0; x < (DISPLAY_WIDTH / 8); x++)
         {
             assert_uint8(0, ==, state.display[y][x]);
         }
@@ -32,4 +36,6 @@ MunitResult test_clear_screen(const MunitParameter params[], void* user_data_or_
      * now that the display has changed.
      */
     assert_true(state.display_changed);
+
+    return MUNIT_OK;
 }

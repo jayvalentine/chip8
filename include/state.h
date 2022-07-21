@@ -6,6 +6,7 @@
 
 #define DISPLAY_WIDTH 64
 #define DISPLAY_HEIGHT 32
+#define DISPLAY_SIZE (DISPLAY_HEIGHT * (DISPLAY_WIDTH / 8))
 
 /* Represents the emulator state. */
 typedef struct _State
