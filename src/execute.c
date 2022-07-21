@@ -126,13 +126,22 @@ void exec_jump(State * s, address destination)
 /* Calls the subroutine at the given destination. */
 void exec_subroutine_call(State * s, address destination)
 {
+    /* Save current PC on the stack. This will be the address
+     * of the instruction after the call.
+     */
+    s->stack.values[s->stack.size] = s->pc;
+    s->stack.size++;
 
+    /* Transfer control to destination address. */
+    s->pc = destination;
 }
 
 /* Returns from the current subroutine. */
 void exec_subroutine_return(State * s)
 {
-    
+    /* Set PC to top of stack. */
+    s->stack.size--;
+    s->pc = s->stack.values[s->stack.size];
 }
 
 /* Skips next instruction if VX == VY */
