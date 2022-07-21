@@ -1,0 +1,63 @@
+#include "munit/munit.h"
+
+/* Declare test functions. */
+<% test_functions.each do |test_class, tests| %>
+/* test/<%= test_class %>.c */
+<%     tests.each do |t| %>
+MunitResult <%= t %>(const MunitParameter params[], void* user_data_or_fixture);
+<%     end %>
+<% end %>
+
+int main(int argc, char * argv[])
+{
+<% test_functions.each do |test_class, tests| %>
+    MunitTest tests_<%= test_class %>[] =
+    {
+<%     tests.each do |t| %>
+        {
+            "/<%= t %>",
+            <%= t %>,
+            NULL,
+            NULL,
+            MUNIT_TEST_OPTION_NONE,
+            NULL
+        },
+<%     end %>
+        {   /* End of tests. */
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            MUNIT_TEST_OPTION_NONE,
+            NULL
+        }
+    };
+
+    MunitSuite suite_<%= test_class %> =
+    {
+        "/<%= test_class %>",
+        tests_<%= test_class %>,
+        NULL,
+        1,
+        MUNIT_SUITE_OPTION_NONE
+    };
+<% end %>
+
+    MunitSuite suites[] =
+    {
+<% test_functions.each do |test_class, tests| %>
+        suite_<%= test_class %>,
+<% end %>
+    };
+
+    MunitSuite suite_main =
+    {
+        "/tests",
+        NULL,
+        suites,
+        1,
+        MUNIT_SUITE_OPTION_NONE
+    };
+
+    return munit_suite_main(&suite_main, NULL, argc, argv);
+}

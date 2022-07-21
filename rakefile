@@ -1,0 +1,34 @@
+require 'erb'
+
+namespace 'test' do
+    task 'unit' do
+        unit_test_function = /MunitResult (test_\S+)\(const MunitParameter params\[\], void\* user_data_or_fixture\)/
+
+        # Get a list of test functions.
+        test_functions = {}
+        Dir.glob('test/*.c').each do |c|
+            test_class = File.basename(c, '.c')
+
+            next if test_class == 'main'
+
+            File.open(c, 'r') do |f|
+                f.each_line do |l|
+                    if unit_test_function =~ l
+                        test_functions[test_class] = [] if test_functions[test_class].nil?
+
+                        test_functions[test_class] << $1
+                    end
+                end
+            end
+        end
+
+        # Generate test runner main file.
+        renderer = ERB.new(File.read('test/main.c.erb'))
+        File.write('test/main.c', renderer.result(binding))
+
+        # Compile tests.
+        system("gcc -I. -o test.exe test/*.c")
+
+        # Run tests.
+    end
+end
