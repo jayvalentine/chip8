@@ -9,6 +9,8 @@ typedef enum _Opcode
     DRAW,
 
     JUMP,
+    CALL,
+    RETURN,
 
     SKIP_EQ_REG,
     SKIP_NEQ_REG,

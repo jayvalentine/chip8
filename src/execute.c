@@ -18,6 +18,12 @@ void execute(State * s, Instruction * i)
         case JUMP:
             exec_jump(s, i->NNN);
             break;
+        case CALL:
+            exec_subroutine_call(s, i->NNN);
+            break;
+        case RETURN:
+            exec_subroutine_return(s);
+            break;
         case SKIP_EQ_IMM:
             exec_skip_eq_imm(s, i->X, i->NN);
             break;

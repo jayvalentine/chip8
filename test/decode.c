@@ -141,3 +141,28 @@ TEST(decode_draw)
 
     return MUNIT_OK;
 }
+
+TEST(decode_call)
+{
+    uint16_t opcode = 0x2998;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == CALL);
+    assert_uint16(0x998, ==, instr.NNN);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_return)
+{
+    uint16_t opcode = 0x00EE;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == RETURN);
+
+    return MUNIT_OK;
+}
