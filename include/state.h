@@ -15,6 +15,9 @@ typedef struct _State
 {
     address pc;
 
+    /* Registers 0 through F. */
+    uint8_t registers[16];
+
     /* Display memory.
      * Organized as 32 rows of 64 pixels.
      * Each row is 8 bytes.

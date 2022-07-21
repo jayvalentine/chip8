@@ -17,3 +17,15 @@ void exec_jump(State * s, address destination)
 {
     s->pc = destination;
 }
+
+/* Sets register to immediate value. */
+void exec_set_reg_imm(State *s, uint8_t reg, uint8_t imm)
+{
+    
+}
+
+/* Adds immediate value to register. */
+void exec_add_reg_imm(State *s, uint8_t reg, uint8_t imm)
+{
+
+}

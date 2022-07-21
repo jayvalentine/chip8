@@ -66,3 +66,41 @@ TEST(jump_loop)
 
     return MUNIT_OK;
 }
+
+TEST(set_reg_imm)
+{
+    State state;
+
+    state.registers[0xf] = 12;
+    state.registers[0x2] = 99;
+    state.registers[0x0] = 123;
+
+    exec_set_reg_imm(&state, 0xf, 255);
+    exec_set_reg_imm(&state, 0x2, 42);
+    exec_set_reg_imm(&state, 0x0, 0);
+
+    assert_uint8(255, ==, state.registers[0xf]);
+    assert_uint8(42, ==, state.registers[0x2]);
+    assert_uint8(0, ==, state.registers[0x0]);
+
+    return MUNIT_OK;
+}
+
+TEST(add_reg_imm)
+{
+    State state;
+
+    state.registers[0x8] = 12;
+    state.registers[0xd] = 99;
+    state.registers[0x1] = 123;
+
+    exec_add_reg_imm(&state, 0x8, 12);
+    exec_add_reg_imm(&state, 0xd, 1);
+    exec_add_reg_imm(&state, 0x1, 4);
+
+    assert_uint8(24, ==, state.registers[0x8]);
+    assert_uint8(100, ==, state.registers[0xd]);
+    assert_uint8(127, ==, state.registers[0x1]);
+
+    return MUNIT_OK;
+}
