@@ -12,6 +12,30 @@ void exec_clear_screen(State * s)
     s->display_changed = true;
 }
 
+/* Helper function to set display.
+ *
+ * s: state pointer
+ * x_in_bytes: index into row in bytes
+ * y: row index
+ * mask: pattern for setting bits of display.
+ */
+void set_display(State * s, uint8_t x_in_bytes, uint8_t y, uint8_t mask)
+{
+    uint8_t * display_byte_ptr = &s->display[y][x_in_bytes];
+
+    uint8_t current = *display_byte_ptr;
+
+    /* A pixel will be switched off if any bits are set in both
+     * the current value and the mask.
+     */
+    if (current & mask) s->registers[0xf] = 1;
+
+    /* XOR the current value with the mask and write back
+     * to display memory.
+     */
+    *display_byte_ptr = current ^ mask;
+}
+
 void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
 {
     /* Sprite starts at the address pointed to by index register. */
@@ -28,13 +52,15 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
     /* Draw the sprite. */
     while (n > 0)
     {
-        s->display[y][x_in_bytes] = s->memory[addr] >> spillover;
+        uint8_t mask = s->memory[addr];
+
+        set_display(s, x_in_bytes, y, mask >> spillover);
 
         /* If the X coordinate isn't perfectly aligned, spill over
          * to the next column. */
         if (spillover > 0 && x_in_bytes != ((DISPLAY_WIDTH / 8) - 1))
         {
-            s->display[y][x_in_bytes+1] = s->memory[addr] << (8-spillover);
+            set_display(s, x_in_bytes + 1, y, mask << (8-spillover));
         }
 
         y++;
