@@ -30,7 +30,7 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
 
         /* If the X coordinate isn't perfectly aligned, spill over
          * to the next column. */
-        if (spillover > 0)
+        if (spillover > 0 && x != ((DISPLAY_WIDTH / 8) - 1))
         {
             s->display[y][x+1] = s->memory[addr] << (8-spillover);
         }
