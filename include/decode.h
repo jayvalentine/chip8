@@ -6,6 +6,8 @@
 typedef enum _Opcode
 {
     CLEAR,
+    DRAW,
+
     JUMP,
 
     SET_REG_IMM,
@@ -18,7 +20,8 @@ typedef struct _Instruction
 {
     Opcode opcode;
     uint16_t NNN;
-    uint16_t NN;
+    uint8_t NN;
+    uint8_t N;
     uint8_t X;
     uint8_t Y;
 } Instruction;

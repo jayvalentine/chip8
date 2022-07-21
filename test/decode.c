@@ -70,3 +70,18 @@ TEST(decode_set_index_imm)
 
     return MUNIT_OK;
 }
+
+TEST(decode_draw)
+{
+    uint16_t opcode = 0xD5c9;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == DRAW);
+    assert_uint8(0x5, ==, instr.X);
+    assert_uint8(0xc, ==, instr.Y);
+    assert_uint8(0x9, ==, instr.N);
+
+    return MUNIT_OK;
+}
