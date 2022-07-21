@@ -170,3 +170,58 @@ TEST(draw_all_aligned)
 
     return MUNIT_OK;
 }
+
+TEST(draw_all_unaligned)
+{
+    State state;
+
+    memset(state.display, 0, sizeof(state.display));
+
+    state.memory[42] = 0b11111111;
+    state.memory[43] = 0b11111111;
+    state.memory[44] = 0b11111111;
+
+    state.i = 42;
+
+    state.registers[0x2] = 10;
+    state.registers[0x5] = 15;
+
+    exec_draw(&state, 0x2, 0x5, 3);
+
+    /* Check that the bits above the sprite are unaffected. */
+    for (int y = 0; y < 15; y++)
+    {
+        assert_uint8(0, ==, state.display[y][1]);
+        assert_uint8(0, ==, state.display[y][2]);
+    }
+
+    /* Check that the sprite bits have been set. */
+    for (int y = 15; y < 18; y++)
+    {
+        assert_uint8(0b00111111, ==, state.display[y][1]);
+        assert_uint8(0b11000000, ==, state.display[y][2]);
+    }
+
+    /* Check that the bits below the sprite are unaffected. */
+    for (int y = 18; y < DISPLAY_HEIGHT; y++)
+    {
+        fprintf(stderr, "y: %d, x: %d\n", y, 1);
+        assert_uint8(0, ==, state.display[y][1]);
+        assert_uint8(0, ==, state.display[y][2]);
+    }
+
+    /* Check that other columns are unaffected. */
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        for (int x = 0; x < (DISPLAY_WIDTH / 8); x++)
+        {
+            if (x == 1) continue;
+            if (x == 2) continue;
+            
+            fprintf(stderr, "y: %d, x: %d", y, x);
+            assert_uint8(0, ==, state.display[y][x]);
+        }
+    }
+
+    return MUNIT_OK;
+}
