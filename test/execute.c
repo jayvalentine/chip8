@@ -104,3 +104,16 @@ TEST(add_reg_imm)
 
     return MUNIT_OK;
 }
+
+TEST(set_index_imm)
+{
+    State state;
+
+    state.i = 123;
+
+    exec_set_index_imm(&state, 42);
+
+    assert_uint16(42, ==, state.i);
+
+    return MUNIT_OK;
+}

@@ -29,3 +29,9 @@ void exec_add_reg_imm(State *s, uint8_t reg, uint8_t imm)
 {
     s->registers[reg] += imm;
 }
+
+/* Sets index register. */
+void exec_set_index_imm(State *s, uint16_t imm)
+{
+
+}
