@@ -588,6 +588,7 @@ TEST(skip_eq_reg_true)
     
     state.registers[0xa] = 42;
     state.registers[0x2] = 42;
+    state.skip_next = false;
 
     exec_skip_eq_reg(&state, 0xa, 0x2);
     assert_true(state.skip_next);
@@ -601,8 +602,35 @@ TEST(skip_eq_reg_false)
     
     state.registers[0xd] = 42;
     state.registers[0x3] = 12;
+    state.skip_next = false;
 
     exec_skip_eq_reg(&state, 0x3, 0xd);
+    assert_false(state.skip_next);
+
+    return MUNIT_OK;
+}
+
+TEST(skip_eq_imm_true)
+{
+    State state;
+    
+    state.registers[0xa] = 42;
+    state.skip_next = false;
+
+    exec_skip_eq_imm(&state, 0xa, 42);
+    assert_true(state.skip_next);
+
+    return MUNIT_OK;
+}
+
+TEST(skip_eq_imm_false)
+{
+    State state;
+    
+    state.registers[0xd] = 42;
+    state.skip_next = false;
+
+    exec_skip_eq_imm(&state, 0x3, 99);
     assert_false(state.skip_next);
 
     return MUNIT_OK;
