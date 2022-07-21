@@ -171,6 +171,51 @@ TEST(draw_all_aligned)
     return MUNIT_OK;
 }
 
+TEST(draw_all_aligned_oob_y)
+{
+    State state;
+
+    memset(state.display, 0, sizeof(state.display));
+
+    state.memory[42] = 0b11111111;
+    state.memory[43] = 0b11111111;
+    state.memory[44] = 0b11111111;
+
+    state.i = 42;
+
+    state.registers[0xa] = 8;
+    state.registers[0xc] = 30;
+
+    exec_draw(&state, 0xa, 0xc, 3);
+
+    /* Check that the bits above the sprite are unaffected. */
+    for (int y = 0; y < 30; y++)
+    {
+        fprintf(stderr, "y: %d, x: %d\n", y, 1);
+        assert_uint8(0, ==, state.display[y][1]);
+    }
+
+    /* Check that the sprite bits have been set. */
+    for (int y = 30; y < DISPLAY_HEIGHT; y++)
+    {
+        fprintf(stderr, "y: %d, x: %d\n", y, 1);
+        assert_uint8(0b11111111, ==, state.display[y][1]);
+    }
+
+    /* Check that other columns are unaffected. */
+    for (int y = 0; y < DISPLAY_HEIGHT; y++)
+    {
+        for (int x = 0; x < (DISPLAY_WIDTH / 8); x++)
+        {
+            if (x == 1) continue;
+            fprintf(stderr, "y: %d, x: %d", y, x);
+            assert_uint8(0, ==, state.display[y][x]);
+        }
+    }
+
+    return MUNIT_OK;
+}
+
 TEST(draw_all_unaligned)
 {
     State state;
@@ -226,7 +271,7 @@ TEST(draw_all_unaligned)
     return MUNIT_OK;
 }
 
-TEST(draw_all_unaligned_oob)
+TEST(draw_all_unaligned_oob_x)
 {
     State state;
 

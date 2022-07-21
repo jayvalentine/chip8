@@ -36,6 +36,9 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
         }
 
         y++;
+
+        if (y == DISPLAY_HEIGHT) break;
+        
         addr++;
         n--;
     }
