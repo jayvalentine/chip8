@@ -18,6 +18,11 @@ void execute(State * s, Instruction * i)
         case JUMP:
             exec_jump(s, i->NNN);
             break;
+        case SKIP_EQ_IMM:
+        case SKIP_NEQ_IMM:
+        case SKIP_EQ_REG:
+        case SKIP_NEQ_REG:
+            break;
         case SET_REG_IMM:
             exec_set_reg_imm(s, i->X, i->NN);
             break;

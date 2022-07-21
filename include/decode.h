@@ -10,6 +10,11 @@ typedef enum _Opcode
 
     JUMP,
 
+    SKIP_EQ_REG,
+    SKIP_NEQ_REG,
+    SKIP_EQ_IMM,
+    SKIP_NEQ_IMM,
+
     SET_REG_IMM,
     ADD_REG_IMM,
 

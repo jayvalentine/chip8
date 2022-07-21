@@ -71,6 +71,62 @@ TEST(decode_set_index_imm)
     return MUNIT_OK;
 }
 
+TEST(decode_skip_eq_imm)
+{
+    uint16_t opcode = 0x3D42;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SKIP_EQ_IMM);
+    assert_uint8(0xd, ==, instr.X);
+    assert_uint8(0x42, ==, instr.NN);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_skip_neq_imm)
+{
+    uint16_t opcode = 0x4C99;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SKIP_NEQ_IMM);
+    assert_uint8(0xc, ==, instr.X);
+    assert_uint8(0x99, ==, instr.NN);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_skip_eq_reg)
+{
+    uint16_t opcode = 0x5720;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SKIP_EQ_REG);
+    assert_uint8(0x7, ==, instr.X);
+    assert_uint8(0x2, ==, instr.Y);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_skip_neq_reg)
+{
+    uint16_t opcode = 0x9930;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SKIP_NEQ_REG);
+    assert_uint8(0x9, ==, instr.X);
+    assert_uint8(0x3, ==, instr.Y);
+
+    return MUNIT_OK;
+}
+
 TEST(decode_draw)
 {
     uint16_t opcode = 0xD5c9;
