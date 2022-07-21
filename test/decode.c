@@ -29,3 +29,44 @@ TEST(decode_clear)
 
     return MUNIT_OK;
 }
+
+TEST(decode_set_reg_imm)
+{
+    uint16_t opcode = 0x6499;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SET_REG_IMM);
+    assert_uint8(0x4, ==, instr.X);
+    assert_uint16(0x99, ==, instr.NN);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_add_reg_imm)
+{
+    uint16_t opcode = 0x7c22;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == ADD_REG_IMM);
+    assert_uint8(0xc, ==, instr.X);
+    assert_uint16(0x22, ==, instr.NN);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_set_index_imm)
+{
+    uint16_t opcode = 0xA123;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SET_INDEX_IMM);
+    assert_uint16(0x123, ==, instr.NNN);
+
+    return MUNIT_OK;
+}

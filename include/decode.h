@@ -6,13 +6,21 @@
 typedef enum _Opcode
 {
     CLEAR,
-    JUMP
+    JUMP,
+
+    SET_REG_IMM,
+    ADD_REG_IMM,
+
+    SET_INDEX_IMM
 } Opcode;
 
 typedef struct _Instruction
 {
     Opcode opcode;
     uint16_t NNN;
+    uint16_t NN;
+    uint8_t X;
+    uint8_t Y;
 } Instruction;
 
 void decode(Instruction * instr, uint16_t opcode);
