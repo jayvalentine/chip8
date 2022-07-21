@@ -14,7 +14,9 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n);
 
 /* Control flow instructions. */
 
-void exec_jump(State * s, uint16_t destination);
+void exec_jump(State * s, address destination);
+void exec_subroutine_call(State * s, address destination);
+void exec_subroutine_return(State * s);
 
 void exec_skip_eq_reg(State * s, uint8_t x, uint8_t y);
 void exec_skip_eq_imm(State * s, uint8_t x, uint8_t imm);

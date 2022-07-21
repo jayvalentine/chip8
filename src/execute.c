@@ -123,6 +123,18 @@ void exec_jump(State * s, address destination)
     s->pc = destination;
 }
 
+/* Calls the subroutine at the given destination. */
+void exec_subroutine_call(State * s, address destination)
+{
+
+}
+
+/* Returns from the current subroutine. */
+void exec_subroutine_return(State * s)
+{
+    
+}
+
 /* Skips next instruction if VX == VY */
 void exec_skip_eq_reg(State * s, uint8_t x, uint8_t y)
 {

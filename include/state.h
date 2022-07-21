@@ -10,6 +10,14 @@
 
 typedef uint16_t address;
 
+#define STACK_LIMIT 16
+
+typedef struct _Stack
+{
+    address values[STACK_LIMIT];
+    uint8_t size;
+} Stack;
+
 /* Represents the emulator state. */
 typedef struct _State
 {
@@ -23,6 +31,9 @@ typedef struct _State
 
     /* General purpose memory. */
     uint8_t memory[4096];
+
+    /* Stack for subroutines. */
+    Stack stack;
 
     /* Display memory.
      * Organized as 32 rows of 64 pixels.

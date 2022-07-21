@@ -689,3 +689,35 @@ TEST(skip_neq_imm_false)
 
     return MUNIT_OK;
 }
+
+TEST(subroutine_call)
+{
+    State state;
+    
+    state.pc = 42;
+    state.stack.size = 0;
+
+    exec_subroutine_call(&state, 123);
+    
+    assert_uint8(1, ==, state.stack.size);
+    assert_uint16(42, ==, state.stack.values[0]);
+    assert_uint16(123, ==, state.pc);
+
+    return MUNIT_OK;
+}
+
+TEST(subroutine_return)
+{
+    State state;
+    
+    state.pc = 99;
+    state.stack.size = 1;
+    state.stack.values[0] = 244;
+
+    exec_subroutine_return(&state);
+    
+    assert_uint8(0, ==, state.stack.size);
+    assert_uint16(244, ==, state.pc);
+
+    return MUNIT_OK;
+}
