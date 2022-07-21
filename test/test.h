@@ -1,0 +1,1 @@
+#define TEST(t) MunitResult test_ ## t (const MunitParameter params[], void* user_data_or_fixture)

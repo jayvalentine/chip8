@@ -1,6 +1,7 @@
 
 #define MUNIT_ENABLE_ASSERT_ALIASES
 #include "munit/munit.h"
+#include "test/test.h"
 
 #include "include/state.h"
 #include "include/execute.h"
@@ -10,7 +11,7 @@
 /* Tests that executing the clear_screen instruction results in the display memory being cleared,
  * and the "display changed" flag being set.
  */
-MunitResult test_clear_screen(const MunitParameter params[], void* user_data_or_fixture)
+TEST(clear_screen)
 {
     State state;
 

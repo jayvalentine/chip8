@@ -2,7 +2,7 @@ require 'erb'
 
 namespace 'test' do
     task 'unit' do
-        unit_test_function = /MunitResult (test_\S+)\(const MunitParameter params\[\], void\* user_data_or_fixture\)/
+        unit_test_function = /TEST\((\S+)\)/
 
         # Get a list of test functions.
         test_functions = {}
