@@ -120,19 +120,19 @@ void exec_skip_eq_reg(State * s, uint8_t x, uint8_t y)
 /* Skips next instruction if VX == IMM */
 void exec_skip_eq_imm(State * s, uint8_t x, uint8_t imm)
 {
-    
+    s->skip_next = (s->registers[x] == imm);
 }
 
 /* Skips next instruction if VX != VY */
 void exec_skip_neq_reg(State * s, uint8_t x, uint8_t y)
 {
-    
+    s->skip_next = (s->registers[x] != s->registers[y]);
 }
 
 /* Skips next instruction if VX != IMM */
 void exec_skip_neq_imm(State * s, uint8_t x, uint8_t imm)
 {
-    
+    s->skip_next = (s->registers[x] != imm);
 }
 
 /* Sets register to immediate value. */

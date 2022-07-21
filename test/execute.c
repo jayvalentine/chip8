@@ -684,7 +684,7 @@ TEST(skip_neq_imm_false)
     state.registers[0xd] = 42;
     state.skip_next = false;
 
-    exec_skip_neq_imm(&state, 0x3, 42);
+    exec_skip_neq_imm(&state, 0xd, 42);
     assert_false(state.skip_next);
 
     return MUNIT_OK;
