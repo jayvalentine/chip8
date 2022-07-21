@@ -20,10 +20,21 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
     uint8_t x = s->registers[x_reg] / 8;
     uint8_t y = s->registers[y_reg];
 
+    /* Calculate how many bits spill over to the next column (if any) */
+    uint8_t spillover = s->registers[x_reg] % 8;
+
     /* Draw the sprite. */
     while (n > 0)
     {
-        s->display[y][x] = s->memory[addr];
+        s->display[y][x] = s->memory[addr] >> spillover;
+
+        /* If the X coordinate isn't perfectly aligned, spill over
+         * to the next column. */
+        if (spillover > 0)
+        {
+            s->display[y][x+1] = s->memory[addr] << (8-spillover);
+        }
+
         y++;
         addr++;
         n--;
