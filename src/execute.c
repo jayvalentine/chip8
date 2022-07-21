@@ -111,6 +111,12 @@ void exec_jump(State * s, address destination)
     s->pc = destination;
 }
 
+/* Skips next instruction if VX == VY */
+void exec_skip_eq(State * s, uint8_t x, uint8_t y)
+{
+    s->skip_next = (s->registers[x] == s->registers[y]);
+}
+
 /* Sets register to immediate value. */
 void exec_set_reg_imm(State *s, uint8_t reg, uint8_t imm)
 {

@@ -33,6 +33,10 @@ typedef struct _State
     /* Flag to indicate if the display has changed.
      */
     bool display_changed;
+
+    /* Should the next instruction be skipped?
+     */
+    bool skip_next;
 } State;
 
 #endif /* _STATE_H */

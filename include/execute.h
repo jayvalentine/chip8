@@ -16,6 +16,8 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n);
 
 void exec_jump(State * s, uint16_t destination);
 
+void exec_skip_eq(State * s, uint8_t x, uint8_t y);
+
 /* Arithmetic/logic instructions. */
 
 void exec_set_reg_imm(State *s, uint8_t reg, uint8_t imm);
