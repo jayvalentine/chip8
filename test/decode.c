@@ -166,3 +166,129 @@ TEST(decode_return)
 
     return MUNIT_OK;
 }
+
+TEST(decode_set_reg)
+{
+    uint16_t opcode = 0x8750;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SET_REG_REG);
+    assert_uint8(instr.X, ==, 0x7);
+    assert_uint8(instr.Y, ==, 0x5);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_or)
+{
+    uint16_t opcode = 0x8921;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == OR_REG_REG);
+    assert_uint8(instr.X, ==, 0x9);
+    assert_uint8(instr.Y, ==, 0x2);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_and)
+{
+    uint16_t opcode = 0x8452;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == AND_REG_REG);
+    assert_uint8(instr.X, ==, 0x4);
+    assert_uint8(instr.Y, ==, 0x5);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_xor)
+{
+    uint16_t opcode = 0x8ad3;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == XOR_REG_REG);
+    assert_uint8(instr.X, ==, 0xa);
+    assert_uint8(instr.Y, ==, 0xd);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_add_reg_reg)
+{
+    uint16_t opcode = 0x8244;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == ADD_REG_REG);
+    assert_uint8(instr.X, ==, 0x2);
+    assert_uint8(instr.Y, ==, 0x4);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_sub_XY)
+{
+    uint16_t opcode = 0x8455;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SUB_XY);
+    assert_uint8(instr.X, ==, 0x4);
+    assert_uint8(instr.Y, ==, 0x5);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_sub_YX)
+{
+    uint16_t opcode = 0x8947;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SUB_YX);
+    assert_uint8(instr.X, ==, 0x9);
+    assert_uint8(instr.Y, ==, 0x4);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_shift_r)
+{
+    uint16_t opcode = 0x8126;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SHIFT_R);
+    assert_uint8(instr.X, ==, 0x1);
+    assert_uint8(instr.Y, ==, 0x2);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_shift_l)
+{
+    uint16_t opcode = 0x843e;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == SHIFT_L);
+    assert_uint8(instr.X, ==, 0x4);
+    assert_uint8(instr.Y, ==, 0x3);
+
+    return MUNIT_OK;
+}

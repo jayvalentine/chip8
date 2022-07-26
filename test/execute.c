@@ -875,3 +875,523 @@ TEST(subroutine_return)
 
     return MUNIT_OK;
 }
+
+TEST(set_reg_reg)
+{
+    State state;
+
+    state.registers[0xf] = 12;
+    state.registers[0x9] = 23;
+
+    state.registers[0x2] = 99;
+    state.registers[0x3] = 44;
+
+    state.registers[0x0] = 123;
+
+    Instruction instr1;
+    instr1.opcode = SET_REG_REG;
+    instr1.X = 0xf;
+    instr1.Y = 0x9;
+
+    Instruction instr2;
+    instr2.opcode = SET_REG_REG;
+    instr2.X = 0x2;
+    instr2.Y = 0x3;
+
+    Instruction instr3;
+    instr3.opcode = SET_REG_REG;
+    instr3.X = 0x0;
+    instr3.Y = 0x0;
+
+    execute(&state, &instr1);
+    execute(&state, &instr2);
+    execute(&state, &instr3);
+
+    assert_uint8(23, ==, state.registers[0xf]);
+    assert_uint8(23, ==, state.registers[0x9]);
+
+    assert_uint8(44, ==, state.registers[0x2]);
+    assert_uint8(44, ==, state.registers[0x3]);
+
+    assert_uint8(123, ==, state.registers[0x0]);
+
+    return MUNIT_OK;
+}
+
+TEST(or_reg_reg)
+{
+    State state;
+
+    state.registers[0xf] = 0b10101010;
+    state.registers[0x9] = 0b01010101;
+
+    state.registers[0x2] = 0b11110000;
+    state.registers[0x3] = 0b11111000;
+
+    state.registers[0x0] = 0b11101001;
+
+    Instruction instr1;
+    instr1.opcode = OR_REG_REG;
+    instr1.X = 0xf;
+    instr1.Y = 0x9;
+
+    Instruction instr2;
+    instr2.opcode = OR_REG_REG;
+    instr2.X = 0x2;
+    instr2.Y = 0x3;
+
+    Instruction instr3;
+    instr3.opcode = OR_REG_REG;
+    instr3.X = 0x0;
+    instr3.Y = 0x0;
+
+    execute(&state, &instr1);
+    execute(&state, &instr2);
+    execute(&state, &instr3);
+
+    assert_uint8(0b11111111, ==, state.registers[0xf]);
+    assert_uint8(0b01010101, ==, state.registers[0x9]);
+
+    assert_uint8(0b11111000, ==, state.registers[0x2]);
+    assert_uint8(0b11111000, ==, state.registers[0x3]);
+
+    assert_uint8(0b11101001, ==, state.registers[0x0]);
+
+    return MUNIT_OK;
+}
+
+TEST(and_reg_reg)
+{
+    State state;
+
+    state.registers[0xf] = 0b10101010;
+    state.registers[0x9] = 0b01010101;
+
+    state.registers[0x2] = 0b11110000;
+    state.registers[0x3] = 0b11111000;
+
+    state.registers[0x0] = 0b11101001;
+
+    Instruction instr1;
+    instr1.opcode = AND_REG_REG;
+    instr1.X = 0xf;
+    instr1.Y = 0x9;
+
+    Instruction instr2;
+    instr2.opcode = AND_REG_REG;
+    instr2.X = 0x2;
+    instr2.Y = 0x3;
+
+    Instruction instr3;
+    instr3.opcode = AND_REG_REG;
+    instr3.X = 0x0;
+    instr3.Y = 0x0;
+
+    execute(&state, &instr1);
+    execute(&state, &instr2);
+    execute(&state, &instr3);
+
+    assert_uint8(0b00000000, ==, state.registers[0xf]);
+    assert_uint8(0b01010101, ==, state.registers[0x9]);
+
+    assert_uint8(0b11110000, ==, state.registers[0x2]);
+    assert_uint8(0b11111000, ==, state.registers[0x3]);
+
+    assert_uint8(0b11101001, ==, state.registers[0x0]);
+
+    return MUNIT_OK;
+}
+
+TEST(xor_reg_reg)
+{
+    State state;
+
+    state.registers[0xf] = 0b10101010;
+    state.registers[0x9] = 0b01010101;
+
+    state.registers[0x2] = 0b11110000;
+    state.registers[0x3] = 0b11111000;
+
+    state.registers[0x0] = 0b11101001;
+
+    Instruction instr1;
+    instr1.opcode = XOR_REG_REG;
+    instr1.X = 0xf;
+    instr1.Y = 0x9;
+
+    Instruction instr2;
+    instr2.opcode = XOR_REG_REG;
+    instr2.X = 0x2;
+    instr2.Y = 0x3;
+
+    Instruction instr3;
+    instr3.opcode = XOR_REG_REG;
+    instr3.X = 0x0;
+    instr3.Y = 0x0;
+
+    execute(&state, &instr1);
+    execute(&state, &instr2);
+    execute(&state, &instr3);
+
+    assert_uint8(0b11111111, ==, state.registers[0xf]);
+    assert_uint8(0b01010101, ==, state.registers[0x9]);
+
+    assert_uint8(0b00001000, ==, state.registers[0x2]);
+    assert_uint8(0b11111000, ==, state.registers[0x3]);
+
+    assert_uint8(0b00000000, ==, state.registers[0x0]);
+
+    return MUNIT_OK;
+}
+
+TEST(add_reg_reg_no_carry)
+{
+    State state;
+
+    state.registers[0x8] = 10;
+    state.registers[0x3] = 32;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = ADD_REG_REG;
+    instr.X = 0x8;
+    instr.Y = 0x3;
+
+    execute(&state, &instr);
+
+    assert_uint8(42, ==, state.registers[0x8]);
+    assert_uint8(32, ==, state.registers[0x3]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(add_reg_reg_carry)
+{
+    State state;
+
+    state.registers[0x2] = 200;
+    state.registers[0x9] = 100;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = ADD_REG_REG;
+    instr.X = 0x2;
+    instr.Y = 0x9;
+
+    execute(&state, &instr);
+
+    assert_uint8(44, ==, state.registers[0x2]);
+    assert_uint8(100, ==, state.registers[0x9]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(add_reg_reg_carry_add_1)
+{
+    State state;
+
+    state.registers[0x1] = 255;
+    state.registers[0x3] = 1;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = ADD_REG_REG;
+    instr.X = 0x1;
+    instr.Y = 0x3;
+
+    execute(&state, &instr);
+
+    assert_uint8(0, ==, state.registers[0x1]);
+    assert_uint8(1, ==, state.registers[0x3]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(add_reg_reg_carry_max)
+{
+    State state;
+
+    state.registers[0x8] = 255;
+    state.registers[0x6] = 255;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = ADD_REG_REG;
+    instr.X = 0x8;
+    instr.Y = 0x6;
+
+    execute(&state, &instr);
+
+    assert_uint8(254, ==, state.registers[0x8]);
+    assert_uint8(255, ==, state.registers[0x6]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_xy)
+{
+    State state;
+
+    state.registers[0x8] = 42;
+    state.registers[0x3] = 32;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_XY;
+    instr.X = 0x8;
+    instr.Y = 0x3;
+
+    execute(&state, &instr);
+
+    assert_uint8(10, ==, state.registers[0x8]);
+    assert_uint8(32, ==, state.registers[0x3]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_xy_lower_limit)
+{
+    State state;
+
+    state.registers[0x6] = 42;
+    state.registers[0x4] = 42;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_XY;
+    instr.X = 0x6;
+    instr.Y = 0x4;
+
+    execute(&state, &instr);
+
+    assert_uint8(0, ==, state.registers[0x6]);
+    assert_uint8(42, ==, state.registers[0x4]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_xy_borrow_one)
+{
+    State state;
+
+    state.registers[0x9] = 42;
+    state.registers[0xd] = 43;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_XY;
+    instr.X = 0x9;
+    instr.Y = 0xd;
+
+    execute(&state, &instr);
+
+    assert_uint8(255, ==, state.registers[0x9]);
+    assert_uint8(43, ==, state.registers[0xd]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_xy_borrow_from_zero)
+{
+    State state;
+
+    state.registers[0xa] = 0;
+    state.registers[0xc] = 255;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_XY;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+
+    execute(&state, &instr);
+
+    assert_uint8(1, ==, state.registers[0xa]);
+    assert_uint8(255, ==, state.registers[0xc]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_yx)
+{
+    State state;
+
+    state.registers[0x8] = 42;
+    state.registers[0x3] = 32;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_YX;
+    instr.X = 0x3;
+    instr.Y = 0x8;
+
+    execute(&state, &instr);
+
+    assert_uint8(10, ==, state.registers[0x8]);
+    assert_uint8(32, ==, state.registers[0x3]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_yx_lower_limit)
+{
+    State state;
+
+    state.registers[0x6] = 42;
+    state.registers[0x4] = 42;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_YX;
+    instr.X = 0x4;
+    instr.Y = 0x6;
+
+    execute(&state, &instr);
+
+    assert_uint8(0, ==, state.registers[0x6]);
+    assert_uint8(42, ==, state.registers[0x4]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_yx_borrow_one)
+{
+    State state;
+
+    state.registers[0x9] = 42;
+    state.registers[0xd] = 43;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_YX;
+    instr.X = 0xd;
+    instr.Y = 0x9;
+
+    execute(&state, &instr);
+
+    assert_uint8(255, ==, state.registers[0x9]);
+    assert_uint8(43, ==, state.registers[0xd]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(sub_yx_borrow_from_zero)
+{
+    State state;
+
+    state.registers[0xa] = 0;
+    state.registers[0xc] = 255;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SUB_YX;
+    instr.X = 0xc;
+    instr.Y = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint8(1, ==, state.registers[0xa]);
+    assert_uint8(255, ==, state.registers[0xc]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(shift_r)
+{
+    State state;
+
+    state.registers[0xc] = 0b10101100;
+    state.registers[0xa] = 0;
+    state.registers[0xf] = 1;
+
+    Instruction instr;
+    instr.opcode = SHIFT_R;
+    instr.X = 0xc;
+    instr.Y = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint8(0b01010110, ==, state.registers[0xc]);
+    assert_uint8(0, ==, state.registers[0xa]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(shift_r_carry)
+{
+    State state;
+
+    state.registers[0x3] = 0b10100101;
+    state.registers[0xa] = 0;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SHIFT_R;
+    instr.X = 0x3;
+    instr.Y = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint8(0b01010010, ==, state.registers[0x3]);
+    assert_uint8(0, ==, state.registers[0xa]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(shift_l)
+{
+    State state;
+
+    state.registers[0xc] = 0b01010011;
+    state.registers[0xa] = 0;
+    state.registers[0xf] = 1;
+
+    Instruction instr;
+    instr.opcode = SHIFT_L;
+    instr.X = 0xc;
+    instr.Y = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint8(0b10100110, ==, state.registers[0xc]);
+    assert_uint8(0, ==, state.registers[0xa]);
+    assert_uint8(0, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}
+
+TEST(shift_l_carry)
+{
+    State state;
+
+    state.registers[0x3] = 0b10100101;
+    state.registers[0xa] = 0;
+    state.registers[0xf] = 0;
+
+    Instruction instr;
+    instr.opcode = SHIFT_L;
+    instr.X = 0x3;
+    instr.Y = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint8(0b01001010, ==, state.registers[0x3]);
+    assert_uint8(0, ==, state.registers[0xa]);
+    assert_uint8(1, ==, state.registers[0xf]);
+
+    return MUNIT_OK;
+}

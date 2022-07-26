@@ -63,6 +63,39 @@ void decode(Instruction * instr, uint16_t opcode)
             instr->opcode = ADD_REG_IMM;
             EXTRACT_XNN(instr, opcode);
             break;
+        case 0x8:
+            EXTRACT_XY(instr, opcode);
+            switch (opcode & 0x000f)
+            {
+                case 0x0:
+                    instr->opcode = SET_REG_REG;
+                    break;
+                case 0x1:
+                    instr->opcode = OR_REG_REG;
+                    break;
+                case 0x2:
+                    instr->opcode = AND_REG_REG;
+                    break;
+                case 0x3:
+                    instr->opcode = XOR_REG_REG;
+                    break;
+                case 0x4:
+                    instr->opcode = ADD_REG_REG;
+                    break;
+                case 0x5:
+                    instr->opcode = SUB_XY;
+                    break;
+                case 0x6:
+                    instr->opcode = SHIFT_R;
+                    break;
+                case 0x7:
+                    instr->opcode = SUB_YX;
+                    break;
+                case 0xe:
+                    instr->opcode = SHIFT_L;
+                    break;
+            }
+            break;
         case 0x9:
             instr->opcode = SKIP_NEQ_REG;
             EXTRACT_XY(instr, opcode);
