@@ -1,6 +1,7 @@
 require 'erb'
 
 namespace 'test' do
+    desc "Run unit tests"
     task 'unit' do
         unit_test_function = /TEST\((\S+)\)/
 
@@ -41,11 +42,22 @@ namespace 'test' do
         result = system("./test/unit.exe")
         abort("Tests failed!") unless result
     end
+
 end
 
-task 'build' do
-    source_files = FileList.new("src/*.c")
+desc "Run all tests"
+task 'test' => ['test:unit']
 
-    result = system("gcc -Wall -Werror -I. -o chip8.exe #{source_files.join(" ")}")
-    abort("Build failed!") unless result
+namespace 'build' do
+    Dir.glob("platforms/*").each do |platform_dir|
+        platform = File.basename(platform_dir)
+        
+        desc "Build for platform '#{platform}'"
+        task platform => 'test' do
+            source_files = FileList.new("src/*.c")
+
+            result = system("gcc -Wall -Werror -I. -o chip8.exe #{source_files.join(" ")} #{platform_dir}/platform.c -lSDL2")
+            abort("Build failed!") unless result
+        end
+    end
 end

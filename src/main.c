@@ -1,6 +1,7 @@
 #include "include/state.h"
 #include "include/decode.h"
 #include "include/execute.h"
+#include "include/platform.h"
 
 #include "stdio.h"
 #include "string.h"
@@ -36,37 +37,6 @@ const uint8_t font[5 * 16] =
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-void display_update(State * s)
-{
-    printf("\033[1;1H");
-    
-    /* Reset to top-right corner. */
-    /* Iterate over each row in the display. */
-    for (int y = 0; y < DISPLAY_HEIGHT; y++)
-    {
-        /* Iterate over each byte in the row. */
-        for (int x_in_bytes = 0; x_in_bytes < DISPLAY_WIDTH / 8; x_in_bytes++)
-        {
-            uint8_t b = s->display[y][x_in_bytes];
-            for (int i = 0; i < 8; i++)
-            {
-                char c;
-                if (b & 0b10000000)
-                {
-                    c = '#';
-                }
-                else
-                {
-                    c = ' ';
-                }
-                putchar(c);
-                b <<= 1;
-            }
-        }
-        printf("\n");
-    }
-}
-
 int main(int argc, char ** argv)
 {
     if (argc != 2)
@@ -92,7 +62,7 @@ int main(int argc, char ** argv)
     /* Set entry point of program. */
     s.pc = 0x200;
 
-    printf("\033[2J");
+    platform_init();
 
     /* Fetch/decode/execute cycle. */
     while (1)
@@ -103,15 +73,19 @@ int main(int argc, char ** argv)
         if (current_instr.opcode == UNKNOWN)
         {
             printf("%04x: Invalid opcode %04x\n", s.pc - 2, opcode);
-            return 1;
+            break;
         }
 
         execute(&s, &current_instr);
 
-        /* If screen has been updated, print to stdout. */
+        /* If display memory has been updated, update display. */
         if (s.display_changed)
         {
-            display_update(&s);
+            platform_update_display(&s);
         }
+        
+        if (platform_tick()) break;
     }
+
+    platform_quit();
 }
