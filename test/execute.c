@@ -23,7 +23,10 @@ TEST(clear_screen)
     state.display[3][1] = 42;
     state.display[31][7] = 99;
 
-    exec_clear_screen(&state);
+    Instruction instr;
+    instr.opcode = CLEAR;
+
+    execute(&state, &instr);
 
     /* Check that all bits in the display are now off. */
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
@@ -48,7 +51,11 @@ TEST(jump)
 
     state.pc = 42;
 
-    exec_jump(&state, 123);
+    Instruction instr;
+    instr.opcode = JUMP;
+    instr.NNN = 123;
+
+    execute(&state, &instr);
 
     assert_uint16(123, ==, state.pc);
 
@@ -61,7 +68,11 @@ TEST(jump_loop)
 
     state.pc = 99;
 
-    exec_jump(&state, 99);
+    Instruction instr;
+    instr.opcode = JUMP;
+    instr.NNN = 99;
+
+    execute(&state, &instr);
 
     assert_uint16(99, ==, state.pc);
 
@@ -76,9 +87,24 @@ TEST(set_reg_imm)
     state.registers[0x2] = 99;
     state.registers[0x0] = 123;
 
-    exec_set_reg_imm(&state, 0xf, 255);
-    exec_set_reg_imm(&state, 0x2, 42);
-    exec_set_reg_imm(&state, 0x0, 0);
+    Instruction instr1;
+    instr1.opcode = SET_REG_IMM;
+    instr1.X = 0xf;
+    instr1.NN = 255;
+
+    Instruction instr2;
+    instr2.opcode = SET_REG_IMM;
+    instr2.X = 0x2;
+    instr2.NN = 42;
+
+    Instruction instr3;
+    instr3.opcode = SET_REG_IMM;
+    instr3.X = 0x0;
+    instr3.NN = 0;
+
+    execute(&state, &instr1);
+    execute(&state, &instr2);
+    execute(&state, &instr3);
 
     assert_uint8(255, ==, state.registers[0xf]);
     assert_uint8(42, ==, state.registers[0x2]);
@@ -95,9 +121,24 @@ TEST(add_reg_imm)
     state.registers[0xd] = 99;
     state.registers[0x1] = 123;
 
-    exec_add_reg_imm(&state, 0x8, 12);
-    exec_add_reg_imm(&state, 0xd, 1);
-    exec_add_reg_imm(&state, 0x1, 4);
+    Instruction instr1;
+    instr1.opcode = ADD_REG_IMM;
+    instr1.X = 0x8;
+    instr1.NN = 12;
+
+    Instruction instr2;
+    instr2.opcode = ADD_REG_IMM;
+    instr2.X = 0xd;
+    instr2.NN = 1;
+
+    Instruction instr3;
+    instr3.opcode = ADD_REG_IMM;
+    instr3.X = 0x1;
+    instr3.NN = 4;
+
+    execute(&state, &instr1);
+    execute(&state, &instr2);
+    execute(&state, &instr3);
 
     assert_uint8(24, ==, state.registers[0x8]);
     assert_uint8(100, ==, state.registers[0xd]);
@@ -112,7 +153,11 @@ TEST(set_index_imm)
 
     state.i = 123;
 
-    exec_set_index_imm(&state, 42);
+    Instruction instr;
+    instr.opcode = SET_INDEX_IMM;
+    instr.NNN = 42;
+
+    execute(&state, &instr);
 
     assert_uint16(42, ==, state.i);
 
@@ -135,7 +180,13 @@ TEST(draw_all_aligned)
     state.registers[0xa] = 8;
     state.registers[0xc] = 15;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 15; y++)
@@ -191,7 +242,13 @@ TEST(draw_all_aligned_wrap_x)
     state.registers[0xa] = 72;
     state.registers[0xc] = 15;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 15; y++)
@@ -247,7 +304,13 @@ TEST(draw_all_aligned_wrap_y)
     state.registers[0xa] = 8;
     state.registers[0xc] = 47;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 15; y++)
@@ -303,7 +366,13 @@ TEST(draw_all_aligned_oob_y)
     state.registers[0xa] = 8;
     state.registers[0xc] = 30;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 30; y++)
@@ -352,7 +421,13 @@ TEST(draw_all_unaligned)
     state.registers[0x2] = 10;
     state.registers[0x5] = 15;
 
-    exec_draw(&state, 0x2, 0x5, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0x2;
+    instr.Y = 0x5;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 15; y++)
@@ -411,7 +486,13 @@ TEST(draw_all_unaligned_oob_x)
     state.registers[0x2] = 60;
     state.registers[0x5] = 19;
 
-    exec_draw(&state, 0x2, 0x5, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0x2;
+    instr.Y = 0x5;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 19; y++)
@@ -465,7 +546,13 @@ TEST(draw_checkerboard)
     state.registers[0xa] = 8;
     state.registers[0xc] = 15;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that the bits above the sprite are unaffected. */
     for (int y = 0; y < 15; y++)
@@ -523,7 +610,13 @@ TEST(draw_checkerboard_switch_off)
     state.registers[0xa] = 8;
     state.registers[0xc] = 15;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that display is clear. */
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
@@ -564,7 +657,13 @@ TEST(draw_checkerboard_switch_off_unaligned)
     state.registers[0xa] = 10;
     state.registers[0xc] = 15;
 
-    exec_draw(&state, 0xa, 0xc, 3);
+    Instruction instr;
+    instr.opcode = DRAW;
+    instr.X = 0xa;
+    instr.Y = 0xc;
+    instr.N = 3;
+
+    execute(&state, &instr);
 
     /* Check that display is clear. */
     for (int y = 0; y < DISPLAY_HEIGHT; y++)
@@ -590,7 +689,13 @@ TEST(skip_eq_reg_true)
     state.registers[0x2] = 42;
     state.skip_next = false;
 
-    exec_skip_eq_reg(&state, 0xa, 0x2);
+    Instruction instr;
+    instr.opcode = SKIP_EQ_REG;
+    instr.X = 0xa;
+    instr.Y = 0x2;
+
+    execute(&state, &instr);
+
     assert_true(state.skip_next);
 
     return MUNIT_OK;
@@ -604,7 +709,13 @@ TEST(skip_eq_reg_false)
     state.registers[0x3] = 12;
     state.skip_next = false;
 
-    exec_skip_eq_reg(&state, 0x3, 0xd);
+    Instruction instr;
+    instr.opcode = SKIP_EQ_REG;
+    instr.X = 0xd;
+    instr.Y = 0x3;
+
+    execute(&state, &instr);
+
     assert_false(state.skip_next);
 
     return MUNIT_OK;
@@ -617,7 +728,13 @@ TEST(skip_eq_imm_true)
     state.registers[0xa] = 42;
     state.skip_next = false;
 
-    exec_skip_eq_imm(&state, 0xa, 42);
+    Instruction instr;
+    instr.opcode = SKIP_EQ_IMM;
+    instr.X = 0xa;
+    instr.NN = 42;
+
+    execute(&state, &instr);
+
     assert_true(state.skip_next);
 
     return MUNIT_OK;
@@ -630,7 +747,13 @@ TEST(skip_eq_imm_false)
     state.registers[0xd] = 42;
     state.skip_next = false;
 
-    exec_skip_eq_imm(&state, 0x3, 99);
+    Instruction instr;
+    instr.opcode = SKIP_EQ_IMM;
+    instr.X = 0xa;
+    instr.NN = 99;
+
+    execute(&state, &instr);
+
     assert_false(state.skip_next);
 
     return MUNIT_OK;
@@ -644,7 +767,13 @@ TEST(skip_neq_reg_true)
     state.registers[0x2] = 99;
     state.skip_next = false;
 
-    exec_skip_neq_reg(&state, 0xa, 0x2);
+    Instruction instr;
+    instr.opcode = SKIP_NEQ_REG;
+    instr.X = 0xa;
+    instr.Y = 0x2;
+
+    execute(&state, &instr);
+
     assert_true(state.skip_next);
 
     return MUNIT_OK;
@@ -658,7 +787,13 @@ TEST(skip_neq_reg_false)
     state.registers[0x3] = 42;
     state.skip_next = false;
 
-    exec_skip_neq_reg(&state, 0x3, 0xd);
+    Instruction instr;
+    instr.opcode = SKIP_NEQ_REG;
+    instr.X = 0xd;
+    instr.Y = 0x3;
+
+    execute(&state, &instr);
+
     assert_false(state.skip_next);
 
     return MUNIT_OK;
@@ -671,7 +806,13 @@ TEST(skip_neq_imm_true)
     state.registers[0xa] = 42;
     state.skip_next = false;
 
-    exec_skip_neq_imm(&state, 0xa, 12);
+    Instruction instr;
+    instr.opcode = SKIP_NEQ_IMM;
+    instr.X = 0xa;
+    instr.NN = 99;
+
+    execute(&state, &instr);
+
     assert_true(state.skip_next);
 
     return MUNIT_OK;
@@ -684,7 +825,13 @@ TEST(skip_neq_imm_false)
     state.registers[0xd] = 42;
     state.skip_next = false;
 
-    exec_skip_neq_imm(&state, 0xd, 42);
+    Instruction instr;
+    instr.opcode = SKIP_NEQ_IMM;
+    instr.X = 0xd;
+    instr.NN = 42;
+
+    execute(&state, &instr);
+
     assert_false(state.skip_next);
 
     return MUNIT_OK;
@@ -697,7 +844,11 @@ TEST(subroutine_call)
     state.pc = 42;
     state.stack.size = 0;
 
-    exec_subroutine_call(&state, 123);
+    Instruction instr;
+    instr.opcode = CALL;
+    instr.NNN = 123;
+
+    execute(&state, &instr);
     
     assert_uint8(1, ==, state.stack.size);
     assert_uint16(42, ==, state.stack.values[0]);
@@ -714,7 +865,10 @@ TEST(subroutine_return)
     state.stack.size = 1;
     state.stack.values[0] = 244;
 
-    exec_subroutine_return(&state);
+    Instruction instr;
+    instr.opcode = RETURN;
+
+    execute(&state, &instr);
     
     assert_uint8(0, ==, state.stack.size);
     assert_uint16(244, ==, state.pc);

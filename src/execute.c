@@ -2,56 +2,12 @@
 
 #include "string.h"
 
-/* Entry point for execution. Determines the type of instruction
- * and calls the relevant execution function.
+/* Type declaration for a helper function for executing an instruction.
  */
-void execute(State * s, Instruction * i)
-{
-    switch (i->opcode)
-    {
-        case CLEAR:
-            exec_clear_screen(s);
-            break;
-        case DRAW:
-            exec_draw(s, i->X, i->Y, i->N);
-            break;
-        case JUMP:
-            exec_jump(s, i->NNN);
-            break;
-        case CALL:
-            exec_subroutine_call(s, i->NNN);
-            break;
-        case RETURN:
-            exec_subroutine_return(s);
-            break;
-        case SKIP_EQ_IMM:
-            exec_skip_eq_imm(s, i->X, i->NN);
-            break;
-        case SKIP_NEQ_IMM:
-            exec_skip_neq_imm(s, i->X, i->NN);
-            break;
-        case SKIP_EQ_REG:
-            exec_skip_eq_reg(s, i->X, i->Y);
-            break;
-        case SKIP_NEQ_REG:
-            exec_skip_neq_reg(s, i->X, i->Y);
-            break;
-        case SET_REG_IMM:
-            exec_set_reg_imm(s, i->X, i->NN);
-            break;
-        case ADD_REG_IMM:
-            exec_add_reg_imm(s, i->X, i->NN);
-            break;
-        case SET_INDEX_IMM:
-            exec_set_index_imm(s, i->NNN);
-            break;
-        case UNKNOWN:
-            break;
-    }
-}
+typedef void (*execute_helper)(State *, Instruction *);
 
 /* Clears all bits in the display. */
-void exec_clear_screen(State * s)
+static void exec_clear_screen(State * s, Instruction * i)
 {
     /* Clear the display. */
     memset(s->display, 0, sizeof(s->display));
@@ -67,7 +23,7 @@ void exec_clear_screen(State * s)
  * y: row index
  * mask: pattern for setting bits of display.
  */
-void set_display(State * s, uint8_t x_in_bytes, uint8_t y, uint8_t mask)
+static void set_display(State * s, uint8_t x_in_bytes, uint8_t y, uint8_t mask)
 {
     uint8_t * display_byte_ptr = &s->display[y][x_in_bytes];
 
@@ -84,13 +40,15 @@ void set_display(State * s, uint8_t x_in_bytes, uint8_t y, uint8_t mask)
     *display_byte_ptr = current ^ mask;
 }
 
-void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
+static void exec_draw(State * s, Instruction * i)
 {
+    uint8_t n = i->N;
+
     /* Sprite starts at the address pointed to by index register. */
     address addr = s->i;
 
-    uint8_t x = s->registers[x_reg] % DISPLAY_WIDTH;
-    uint8_t y = s->registers[y_reg] % DISPLAY_HEIGHT;
+    uint8_t x = s->registers[i->X] % DISPLAY_WIDTH;
+    uint8_t y = s->registers[i->Y] % DISPLAY_HEIGHT;
 
     uint8_t x_in_bytes = x / 8;
 
@@ -124,13 +82,13 @@ void exec_draw(State * s, uint8_t x_reg, uint8_t y_reg, uint8_t n)
 }
 
 /* Jumps to the given destination. */
-void exec_jump(State * s, address destination)
+static void exec_jump(State * s, Instruction * i)
 {
-    s->pc = destination;
+    s->pc = i->NNN;
 }
 
 /* Calls the subroutine at the given destination. */
-void exec_subroutine_call(State * s, address destination)
+static void exec_subroutine_call(State * s, Instruction * i)
 {
     /* Save current PC on the stack. This will be the address
      * of the instruction after the call.
@@ -139,11 +97,11 @@ void exec_subroutine_call(State * s, address destination)
     s->stack.size++;
 
     /* Transfer control to destination address. */
-    s->pc = destination;
+    s->pc = i->NNN;
 }
 
 /* Returns from the current subroutine. */
-void exec_subroutine_return(State * s)
+static void exec_subroutine_return(State * s, Instruction * i)
 {
     /* Set PC to top of stack. */
     s->stack.size--;
@@ -151,43 +109,82 @@ void exec_subroutine_return(State * s)
 }
 
 /* Skips next instruction if VX == VY */
-void exec_skip_eq_reg(State * s, uint8_t x, uint8_t y)
+static void exec_skip_eq_reg(State * s, Instruction * i)
 {
-    s->skip_next = (s->registers[x] == s->registers[y]);
+    s->skip_next = (s->registers[i->X] == s->registers[i->Y]);
 }
 
 /* Skips next instruction if VX == IMM */
-void exec_skip_eq_imm(State * s, uint8_t x, uint8_t imm)
+static void exec_skip_eq_imm(State * s, Instruction * i)
 {
-    s->skip_next = (s->registers[x] == imm);
+    s->skip_next = (s->registers[i->X] == i->NN);
 }
 
 /* Skips next instruction if VX != VY */
-void exec_skip_neq_reg(State * s, uint8_t x, uint8_t y)
+static void exec_skip_neq_reg(State * s, Instruction * i)
 {
-    s->skip_next = (s->registers[x] != s->registers[y]);
+    s->skip_next = (s->registers[i->X] != s->registers[i->Y]);
 }
 
 /* Skips next instruction if VX != IMM */
-void exec_skip_neq_imm(State * s, uint8_t x, uint8_t imm)
+static void exec_skip_neq_imm(State * s, Instruction * i)
 {
-    s->skip_next = (s->registers[x] != imm);
+    s->skip_next = (s->registers[i->X] != i->NN);
 }
 
 /* Sets register to immediate value. */
-void exec_set_reg_imm(State *s, uint8_t reg, uint8_t imm)
+static void exec_set_reg_imm(State *s, Instruction * i)
 {
-    s->registers[reg] = imm;
+    s->registers[i->X] = i->NN;
 }
 
 /* Adds immediate value to register. */
-void exec_add_reg_imm(State *s, uint8_t reg, uint8_t imm)
+static void exec_add_reg_imm(State *s, Instruction * i)
 {
-    s->registers[reg] += imm;
+    s->registers[i->X] += i->NN;
 }
 
 /* Sets index register. */
-void exec_set_index_imm(State *s, uint16_t imm)
+static void exec_set_index_imm(State *s, Instruction * i)
 {
-    s->i = imm;
+    s->i = i->NNN;
+}
+
+static void invalid_instruction(State * s, Instruction * i)
+{
+    /* Do nothing. */
+}
+
+/* Lookup table for helper functions for each instruction.
+ * Given the opcode of an instruction we can execute it by
+ * calling the corresponding function in this table.
+ */
+const execute_helper execute_lut[] =
+{
+    exec_clear_screen,
+    exec_draw,
+
+    exec_jump,
+    exec_subroutine_call,
+    exec_subroutine_return,
+
+    exec_skip_eq_reg,
+    exec_skip_neq_reg,
+    exec_skip_eq_imm,
+    exec_skip_neq_imm,
+
+    exec_set_reg_imm,
+    exec_add_reg_imm,
+
+    exec_set_index_imm,
+
+    invalid_instruction
+};
+
+/* Entry point for execution. Determines the type of instruction
+ * and calls the relevant execution function.
+ */
+void execute(State * s, Instruction * i)
+{
+    execute_lut[i->opcode](s, i);
 }
