@@ -104,6 +104,10 @@ void decode(Instruction * instr, uint16_t opcode)
             instr->opcode = SET_INDEX_IMM;
             EXTRACT_NNN(instr, opcode);
             break;
+        case 0xC:
+            instr->opcode = RANDOM;
+            EXTRACT_XNN(instr, opcode);
+            break;
         case 0xD:
             instr->opcode = DRAW;
             EXTRACT_XYN(instr, opcode);

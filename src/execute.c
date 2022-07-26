@@ -1,6 +1,7 @@
 #include "include/execute.h"
 
 #include "string.h"
+#include "stdlib.h"
 
 /* Type declaration for a helper function for executing an instruction.
  */
@@ -248,10 +249,10 @@ static void exec_set_index_imm(State * s, Instruction * i)
     s->i = i->NNN;
 }
 
-/* Generates random number, ANDed with NN. */
+/* Generates random number, ANDed with NN, and stores in VX. */
 static void exec_random(State * s, Instruction * i)
 {
-    
+    s->registers[i->X] = rand() & i->NN;
 }
 
 static void invalid_instruction(State * s, Instruction * i)
