@@ -292,3 +292,17 @@ TEST(decode_shift_l)
 
     return MUNIT_OK;
 }
+
+TEST(decode_random)
+{
+    uint16_t opcode = 0xc466;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == RANDOM);
+    assert_uint8(instr.X, ==, 0x4);
+    assert_uint8(instr.NN, ==, 0x66);
+
+    return MUNIT_OK;
+}

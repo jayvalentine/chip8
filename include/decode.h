@@ -34,6 +34,8 @@ typedef enum _Opcode
 
     SET_INDEX_IMM,
 
+    RANDOM,
+
     UNKNOWN
 } Opcode;
 

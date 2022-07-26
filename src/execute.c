@@ -248,6 +248,12 @@ static void exec_set_index_imm(State * s, Instruction * i)
     s->i = i->NNN;
 }
 
+/* Generates random number, ANDed with NN. */
+static void exec_random(State * s, Instruction * i)
+{
+    
+}
+
 static void invalid_instruction(State * s, Instruction * i)
 {
     /* Do nothing. */
@@ -287,6 +293,8 @@ const execute_helper execute_lut[] =
     exec_shift_l,
 
     exec_set_index_imm,
+
+    exec_random,
 
     invalid_instruction
 };

@@ -1395,3 +1395,26 @@ TEST(shift_l_carry)
 
     return MUNIT_OK;
 }
+
+TEST(random)
+{
+    State state;
+
+    state.registers[0x3] = 0;
+
+    Instruction instr;
+    instr.opcode = RANDOM;
+    instr.X = 0x3;
+    instr.NN = 0x42;
+
+    for (int i = 0; i < 1000000; i++)
+    {
+        state.registers[0x3] = i;
+
+        execute(&state, &instr);
+        
+        assert_uint8(state.registers[0x3], ==, state.registers[0x3] & 0x42);
+    }
+
+    return MUNIT_OK;
+}
