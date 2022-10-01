@@ -299,6 +299,19 @@ static void exec_add_index(State * s, Instruction * i)
     if (old_i < 0x1000 && s->i >= 0x1000) s->registers[0xf] = 1;
 }
 
+/* Puts address of font char for hexadecimal value in VX in I. */
+static void exec_font_char(State * s, Instruction * i)
+{
+    /* Get lower nibble of VX. */
+    uint8_t c = s->registers[i->X] & 0xf;
+
+    /* Calculate offset.
+     * Characters start at 0x50.
+     * Each character is 5 bytes.
+     */
+    s->i = 0x50 + (c * 5);
+}
+
 static void invalid_instruction(State * s, Instruction * i)
 {
     /* Do nothing. */
@@ -312,6 +325,7 @@ const execute_helper execute_lut[] =
 {
     exec_clear_screen,
     exec_draw,
+    exec_font_char,
 
     exec_jump,
     exec_subroutine_call,

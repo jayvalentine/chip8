@@ -1664,3 +1664,54 @@ TEST(add_index_overflow)
 
     return MUNIT_OK;
 }
+
+TEST(get_font_char_0)
+{
+    State state;
+
+    state.registers[0xa] = 0;
+    
+    Instruction instr;
+    instr.opcode = FONT_CHAR;
+    instr.X = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint16(state.i, ==, 0x50);
+
+    return MUNIT_OK;
+}
+
+TEST(get_font_char_f)
+{
+    State state;
+
+    state.registers[0x8] = 0xf;
+    
+    Instruction instr;
+    instr.opcode = FONT_CHAR;
+    instr.X = 0x8;
+
+    execute(&state, &instr);
+
+    assert_uint16(state.i, ==, 0x9b);
+
+    return MUNIT_OK;
+}
+
+TEST(get_font_char_upper_ignored)
+{
+    State state;
+
+    state.registers[0x8] = 0x9f;
+    
+    Instruction instr;
+    instr.opcode = FONT_CHAR;
+    instr.X = 0x8;
+
+    execute(&state, &instr);
+
+    assert_uint16(state.i, ==, 0x9b);
+
+    return MUNIT_OK;
+}

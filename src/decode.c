@@ -122,6 +122,9 @@ void decode(Instruction * instr, uint16_t opcode)
                 case 0x1e:
                     instr->opcode = ADD_INDEX;
                     break;
+                case 0x29:
+                    instr->opcode = FONT_CHAR;
+                    break;
                 case 0x33:
                     instr->opcode = BCD_CONVERT;
                     break;

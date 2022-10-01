@@ -358,3 +358,16 @@ TEST(add_index)
 
     return MUNIT_OK;
 }
+
+TEST(font_char)
+{
+    uint16_t opcode = 0xfa29;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == FONT_CHAR);
+    assert_uint8(instr.X, ==, 0xa);
+
+    return MUNIT_OK;
+}

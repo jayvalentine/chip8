@@ -7,6 +7,7 @@ typedef enum _Opcode
 {
     CLEAR,
     DRAW,
+    FONT_CHAR,
 
     JUMP,
     CALL,
