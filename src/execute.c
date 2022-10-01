@@ -289,6 +289,16 @@ static void exec_bcd_convert(State * s, Instruction * i)
     s->memory[s->i + 2] = val % 10;
 }
 
+/* Adds VX to I. Sets VF on overflow. */
+static void exec_add_index(State * s, Instruction * i)
+{
+    uint16_t old_i = s->i;
+
+    s->i += s->registers[i->X];
+
+    if (old_i < 0x1000 && s->i >= 0x1000) s->registers[0xf] = 1;
+}
+
 static void invalid_instruction(State * s, Instruction * i)
 {
     /* Do nothing. */
@@ -328,6 +338,7 @@ const execute_helper execute_lut[] =
     exec_shift_l,
 
     exec_set_index_imm,
+    exec_add_index,
 
     exec_random,
 

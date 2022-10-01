@@ -33,6 +33,7 @@ typedef enum _Opcode
     SHIFT_L,
 
     SET_INDEX_IMM,
+    ADD_INDEX,
 
     RANDOM,
 

@@ -345,3 +345,16 @@ TEST(decode_bcd_convert)
 
     return MUNIT_OK;
 }
+
+TEST(add_index)
+{
+    uint16_t opcode = 0xf91e;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == ADD_INDEX);
+    assert_uint8(instr.X, ==, 0x9);
+
+    return MUNIT_OK;
+}

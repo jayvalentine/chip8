@@ -119,6 +119,9 @@ void decode(Instruction * instr, uint16_t opcode)
             EXTRACT_X(instr, opcode);
             switch (opcode & 0xff)
             {
+                case 0x1e:
+                    instr->opcode = ADD_INDEX;
+                    break;
                 case 0x33:
                     instr->opcode = BCD_CONVERT;
                     break;

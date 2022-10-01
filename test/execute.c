@@ -1624,3 +1624,43 @@ TEST(bcd_convert_zero)
 
     return MUNIT_OK;
 }
+
+TEST(add_index_no_overflow)
+{
+    State state;
+
+    state.registers[0xf] = 0;
+    state.registers[0xa] = 4;
+    state.i = 123;
+
+    Instruction instr;
+    instr.opcode = ADD_INDEX;
+    instr.X = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint16(state.i, ==, 127);
+    assert_uint8(state.registers[0xf], ==, 0);
+
+    return MUNIT_OK;
+}
+
+TEST(add_index_overflow)
+{
+    State state;
+
+    state.registers[0xf] = 0;
+    state.registers[0x3] = 1;
+    state.i = 0xfff;
+
+    Instruction instr;
+    instr.opcode = ADD_INDEX;
+    instr.X = 0x3;
+
+    execute(&state, &instr);
+
+    assert_uint16(state.i, ==, 0x1000);
+    assert_uint8(state.registers[0xf], ==, 1);
+
+    return MUNIT_OK;
+}
