@@ -36,6 +36,11 @@ typedef enum _Opcode
 
     RANDOM,
 
+    STORE,
+    LOAD,
+
+    BCD_CONVERT,
+
     UNKNOWN
 } Opcode;
 

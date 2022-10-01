@@ -10,11 +10,14 @@
 #define EXTRACT_XYN(i, o)     \
     i->X = (o >> 8) & 0x000f; \
     i->Y = (o >> 4) & 0x000f; \
-    i->N = o & 0xf;
+    i->N = o & 0xf
 
 #define EXTRACT_XY(i, o)      \
     i->X = (o >> 8) & 0x000f; \
-    i->Y = (o >> 4) & 0x000f;
+    i->Y = (o >> 4) & 0x000f
+
+#define EXTRACT_X(i, o)       \
+    i->X = (o >> 8) & 0x000f
 
 void decode(Instruction * instr, uint16_t opcode)
 {
@@ -112,5 +115,19 @@ void decode(Instruction * instr, uint16_t opcode)
             instr->opcode = DRAW;
             EXTRACT_XYN(instr, opcode);
             break;
+        case 0xF:
+            EXTRACT_X(instr, opcode);
+            switch (opcode & 0xff)
+            {
+                case 0x33:
+                    instr->opcode = BCD_CONVERT;
+                    break;
+                case 0x55:
+                    instr->opcode = STORE;
+                    break;
+                case 0x65:
+                    instr->opcode = LOAD;
+                    break;
+            }
     }
 }

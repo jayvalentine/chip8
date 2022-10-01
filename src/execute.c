@@ -255,6 +255,40 @@ static void exec_random(State * s, Instruction * i)
     s->registers[i->X] = rand() & i->NN;
 }
 
+/* Stores range of registers up to rX to contiguous block of memory
+ * pointed to by I.
+ */
+static void exec_store(State * s, Instruction * i)
+{
+    for (uint16_t r = 0; r <= i->X; r++)
+    {
+        s->memory[s->i + r] = s->registers[r];
+    }
+}
+
+/* Loads range of registers up to rX from contiguous block of memory
+ * pointed to by I.
+ */
+static void exec_load(State * s, Instruction * i)
+{
+    for (uint16_t r = 0; r <= i->X; r++)
+    {
+        s->registers[r] = s->memory[s->i + r];
+    }
+}
+
+/* Converts value in VX to BCD representation stored in three bytes
+ * of memory pointed to by I.
+ */
+static void exec_bcd_convert(State * s, Instruction * i)
+{
+    uint8_t val = s->registers[i->X];
+
+    s->memory[s->i] = val / 100;
+    s->memory[s->i + 1] = (val % 100) / 10;
+    s->memory[s->i + 2] = val % 10;
+}
+
 static void invalid_instruction(State * s, Instruction * i)
 {
     /* Do nothing. */
@@ -296,6 +330,11 @@ const execute_helper execute_lut[] =
     exec_set_index_imm,
 
     exec_random,
+
+    exec_store,
+    exec_load,
+    
+    exec_bcd_convert,
 
     invalid_instruction
 };

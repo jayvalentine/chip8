@@ -1418,3 +1418,209 @@ TEST(random)
 
     return MUNIT_OK;
 }
+
+TEST(store_one)
+{
+    State state;
+
+    state.registers[0x0] = 42;
+    state.registers[0x1] = 55;
+    state.i = 123;
+
+    Instruction instr;
+    instr.opcode = STORE;
+    instr.X = 0;
+
+    /* Set memory location to known values. */
+    state.memory[123] = 0;
+    state.memory[124] = 0;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.memory[123], ==, 42);
+    assert_uint8(state.memory[124], ==, 0);
+    assert_uint16(state.i, ==, 123);
+
+    return MUNIT_OK;
+}
+
+TEST(store_multiple)
+{
+    State state;
+
+    state.registers[0x0] = 42;
+    state.registers[0x1] = 55;
+    state.registers[0x2] = 99;
+    state.registers[0x3] = 100;
+    state.i = 456;
+
+    Instruction instr;
+    instr.opcode = STORE;
+    instr.X = 2;
+
+    /* Set memory location to known values. */
+    state.memory[456] = 0;
+    state.memory[457] = 0;
+    state.memory[458] = 0;
+    state.memory[459] = 0;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.memory[456], ==, 42);
+    assert_uint8(state.memory[457], ==, 55);
+    assert_uint8(state.memory[458], ==, 99);
+    assert_uint8(state.memory[459], ==, 0);
+    assert_uint16(state.i, ==, 456);
+
+    return MUNIT_OK;
+}
+
+TEST(load_one)
+{
+    State state;
+
+    state.registers[0x0] = 0;
+    state.registers[0x1] = 0;
+    state.i = 123;
+
+    Instruction instr;
+    instr.opcode = LOAD;
+    instr.X = 0;
+
+    state.memory[123] = 42;
+    state.memory[124] = 99;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.registers[0x0], ==, 42);
+    assert_uint8(state.registers[0x1], ==, 0);
+    assert_uint16(state.i, ==, 123);
+
+    return MUNIT_OK;
+}
+
+TEST(load_multiple)
+{
+    State state;
+
+    state.registers[0x0] = 0;
+    state.registers[0x1] = 0;
+    state.registers[0x2] = 0;
+    state.registers[0x3] = 0;
+    state.i = 999;
+
+    Instruction instr;
+    instr.opcode = LOAD;
+    instr.X = 2;
+
+    state.memory[999] = 42;
+    state.memory[1000] = 99;
+    state.memory[1001] = 100;
+    state.memory[1002] = 12;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.registers[0x0], ==, 42);
+    assert_uint8(state.registers[0x1], ==, 99);
+    assert_uint8(state.registers[0x2], ==, 100);
+    assert_uint8(state.registers[0x3], ==, 0);
+    assert_uint16(state.i, ==, 999);
+
+    return MUNIT_OK;
+}
+
+TEST(bcd_convert_less_than_hundred)
+{
+    State state;
+
+    state.registers[0x6] = 96;
+    state.i = 123;
+
+    Instruction instr;
+    instr.opcode = BCD_CONVERT;
+    instr.X = 6;
+
+    state.memory[123] = 0;
+    state.memory[124] = 0;
+    state.memory[125] = 0;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.memory[123], ==, 0);
+    assert_uint8(state.memory[124], ==, 9);
+    assert_uint8(state.memory[125], ==, 6);
+
+    return MUNIT_OK;
+}
+
+TEST(bcd_convert_greater_than_hundred)
+{
+    State state;
+
+    state.registers[0xd] = 235;
+    state.i = 456;
+
+    Instruction instr;
+    instr.opcode = BCD_CONVERT;
+    instr.X = 0xd;
+
+    state.memory[456] = 0;
+    state.memory[457] = 0;
+    state.memory[458] = 0;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.memory[456], ==, 2);
+    assert_uint8(state.memory[457], ==, 3);
+    assert_uint8(state.memory[458], ==, 5);
+
+    return MUNIT_OK;
+}
+
+TEST(bcd_convert_less_than_ten)
+{
+    State state;
+
+    state.registers[0x2] = 5;
+    state.i = 111;
+
+    Instruction instr;
+    instr.opcode = BCD_CONVERT;
+    instr.X = 0x2;
+
+    state.memory[111] = 0;
+    state.memory[112] = 0;
+    state.memory[113] = 0;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.memory[111], ==, 0);
+    assert_uint8(state.memory[112], ==, 0);
+    assert_uint8(state.memory[113], ==, 5);
+
+    return MUNIT_OK;
+}
+
+TEST(bcd_convert_zero)
+{
+    State state;
+
+    state.registers[0x1] = 0;
+    state.i = 999;
+
+    Instruction instr;
+    instr.opcode = BCD_CONVERT;
+    instr.X = 0x1;
+
+    state.memory[999] = 99;
+    state.memory[1000] = 99;
+    state.memory[1001] = 99;
+
+    execute(&state, &instr);
+
+    assert_uint8(state.memory[999], ==, 0);
+    assert_uint8(state.memory[1000], ==, 0);
+    assert_uint8(state.memory[1001], ==, 0);
+
+    return MUNIT_OK;
+}

@@ -306,3 +306,42 @@ TEST(decode_random)
 
     return MUNIT_OK;
 }
+
+TEST(decode_store)
+{
+    uint16_t opcode = 0xf755;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == STORE);
+    assert_uint8(instr.X, ==, 0x7);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_load)
+{
+    uint16_t opcode = 0xfd65;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == LOAD);
+    assert_uint8(instr.X, ==, 0xd);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_bcd_convert)
+{
+    uint16_t opcode = 0xf433;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == BCD_CONVERT);
+    assert_uint8(instr.X, ==, 0x4);
+
+    return MUNIT_OK;
+}
