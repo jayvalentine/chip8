@@ -5,6 +5,8 @@
 
 #include "stdio.h"
 #include "string.h"
+#include "time.h"
+#include "stdlib.h"
 
 uint16_t fetch(State * s)
 {
@@ -39,6 +41,9 @@ const uint8_t font[5 * 16] =
 
 int main(int argc, char ** argv)
 {
+    time_t t;
+    srand((unsigned) time(&t));
+
     if (argc != 2)
     {
         puts("Usage: chip8 <program>");
