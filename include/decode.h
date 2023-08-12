@@ -43,6 +43,10 @@ typedef enum _Opcode
 
     BCD_CONVERT,
 
+    TIMER_SET_DELAY,
+    TIMER_GET_DELAY,
+    TIMER_SET_SOUND,
+
     UNKNOWN
 } Opcode;
 

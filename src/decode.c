@@ -119,6 +119,15 @@ void decode(Instruction * instr, uint16_t opcode)
             EXTRACT_X(instr, opcode);
             switch (opcode & 0xff)
             {
+                case 0x07:
+                    instr->opcode = TIMER_GET_DELAY;
+                    break;
+                case 0x15:
+                    instr->opcode = TIMER_SET_DELAY;
+                    break;
+                case 0x18:
+                    instr->opcode = TIMER_SET_SOUND;
+                    break;
                 case 0x1e:
                     instr->opcode = ADD_INDEX;
                     break;

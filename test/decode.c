@@ -371,3 +371,42 @@ TEST(font_char)
 
     return MUNIT_OK;
 }
+
+TEST(decode_timer_set_delay)
+{
+    uint16_t opcode = 0xf415;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == TIMER_SET_DELAY);
+    assert_uint8(0x4, ==, instr.X);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_timer_get_delay)
+{
+    uint16_t opcode = 0xf907;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == TIMER_GET_DELAY);
+    assert_uint8(0x9, ==, instr.X);
+
+    return MUNIT_OK;
+}
+
+TEST(decode_timer_set_sound)
+{
+    uint16_t opcode = 0xfc18;
+    Instruction instr;
+
+    decode(&instr, opcode);
+
+    assert(instr.opcode == TIMER_SET_SOUND);
+    assert_uint8(0xc, ==, instr.X);
+
+    return MUNIT_OK;
+}
