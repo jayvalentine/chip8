@@ -96,11 +96,14 @@ int main(int argc, char ** argv)
         execute(&s, &current_instr);
         instr_count++;
         if (instr_count >= INSTRS_PER_TICK) instr_count = 0;
-        
+
         /* If display memory has been updated, update display. */
-        if (instr_count == 0 && s.display_changed)
+        if (instr_count == 0)
         {
-            platform_update_display(&s);
+            if (s.timer_delay > 0) s.timer_delay--;
+            if (s.timer_sound > 0) s.timer_sound--;
+            
+            if (s.display_changed) platform_update_display(&s);
         }
         
         if (platform_tick()) break;
