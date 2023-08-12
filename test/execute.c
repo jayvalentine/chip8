@@ -1773,3 +1773,22 @@ TEST(timer_set_delay)
 
     return MUNIT_OK;
 }
+
+TEST(timer_set_sound)
+{
+    State state = { 0 };
+
+    state.registers[0xa] = 0xf1;
+    state.timer_sound = 0xbe;
+
+    Instruction instr;
+    instr.opcode = TIMER_SET_SOUND;
+    instr.X = 0xa;
+
+    execute(&state, &instr);
+
+    assert_uint8(0xf1, ==, state.registers[0xa]);
+    assert_uint8(0xf1, ==, state.timer_sound);
+
+    return MUNIT_OK;
+}
