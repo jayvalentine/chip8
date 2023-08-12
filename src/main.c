@@ -8,6 +8,10 @@
 #include "time.h"
 #include "stdlib.h"
 
+/* Fetches the next instruction from memory,
+ * incrementing the program counter to point to
+ * the instruction after.
+ */
 uint16_t fetch(State * s)
 {
     uint16_t upper = s->memory[s->pc++] << 8;
