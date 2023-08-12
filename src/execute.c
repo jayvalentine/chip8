@@ -3,6 +3,8 @@
 #include "string.h"
 #include "stdlib.h"
 
+#include <stdio.h>
+
 /* Type declaration for a helper function for executing an instruction.
  */
 typedef void (*execute_helper)(State *, Instruction *);
@@ -312,6 +314,25 @@ static void exec_font_char(State * s, Instruction * i)
     s->i = 0x50 + (c * 5);
 }
 
+/* Gets value of delay timer into VX. */
+static void exec_timer_get_delay(State * s, Instruction * i)
+{
+    s->registers[i->X] = s->timer_delay;
+}
+
+/* Sets value of delay timer from VX. */
+static void exec_timer_set_delay(State * s, Instruction * i)
+{
+    s->timer_delay = s->registers[i->X];
+}
+
+/* Sets value of sound timer from VX. */
+static void exec_timer_set_sound(State * s, Instruction * i)
+{
+    s->timer_sound = s->registers[i->X];
+}
+
+
 static void invalid_instruction(State * s, Instruction * i)
 {
     /* Do nothing. */
@@ -360,6 +381,10 @@ const execute_helper execute_lut[] =
     exec_load,
     
     exec_bcd_convert,
+
+    exec_timer_get_delay,
+    exec_timer_set_delay,
+    exec_timer_set_sound,
 
     invalid_instruction
 };

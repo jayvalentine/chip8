@@ -1735,3 +1735,41 @@ TEST(skip_next)
 
     return MUNIT_OK;
 }
+
+TEST(timer_get_delay)
+{
+    State state = { 0 };
+
+    state.registers[0x3] = 0x42;
+    state.timer_delay = 0x99;
+
+    Instruction instr;
+    instr.opcode = TIMER_GET_DELAY;
+    instr.X = 0x3;
+
+    execute(&state, &instr);
+
+    assert_uint8(0x99, ==, state.registers[0x3]);
+    assert_uint8(0x99, ==, state.timer_delay);
+
+    return MUNIT_OK;
+}
+
+TEST(timer_set_delay)
+{
+    State state = { 0 };
+
+    state.registers[0xd] = 0x42;
+    state.timer_delay = 0x99;
+
+    Instruction instr;
+    instr.opcode = TIMER_SET_DELAY;
+    instr.X = 0xd;
+
+    execute(&state, &instr);
+
+    assert_uint8(0x42, ==, state.registers[0xd]);
+    assert_uint8(0x42, ==, state.timer_delay);
+
+    return MUNIT_OK;
+}

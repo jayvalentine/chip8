@@ -48,6 +48,11 @@ typedef struct _State
     /* Should the next instruction be skipped?
      */
     bool skip_next;
+
+
+    /* Timers. */
+    uint8_t timer_delay;
+    uint8_t timer_sound;
 } State;
 
 #endif /* _STATE_H */
