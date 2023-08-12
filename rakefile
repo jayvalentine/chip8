@@ -61,3 +61,7 @@ namespace 'build' do
         end
     end
 end
+
+task 'diag' => 'build:sdl2' do
+    system("./chip8.exe programs/test.ch8")
+end
