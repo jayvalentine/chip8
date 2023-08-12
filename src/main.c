@@ -43,6 +43,13 @@ const uint8_t font[5 * 16] =
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
+/* 480 instructions per second,
+ * so screen updates every 8 instrs
+ */
+#define SECOND_MS 1000
+#define INSTR_DELAY_MS (SECOND_MS / 480)
+#define INSTRS_PER_TICK 8 
+
 int main(int argc, char ** argv)
 {
     time_t t;
@@ -74,6 +81,7 @@ int main(int argc, char ** argv)
     platform_init();
 
     /* Fetch/decode/execute cycle. */
+    uint8_t instr_count = 0;
     while (1)
     {
         uint16_t opcode = fetch(&s);
@@ -86,14 +94,17 @@ int main(int argc, char ** argv)
         }
 
         execute(&s, &current_instr);
-
+        instr_count++;
+        if (instr_count >= INSTRS_PER_TICK) instr_count = 0;
+        
         /* If display memory has been updated, update display. */
-        if (s.display_changed)
+        if (instr_count == 0 && s.display_changed)
         {
             platform_update_display(&s);
         }
         
         if (platform_tick()) break;
+        platform_delay(INSTR_DELAY_MS);
     }
 
     platform_quit();

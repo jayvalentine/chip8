@@ -18,4 +18,7 @@ void platform_quit();
 /* Updates the display according to the current state. */
 void platform_update_display(State * s);
 
+/* Implements a delay for the given number of milliseconds. */
+void platform_delay(uint32_t delay_ms);
+
 #endif /* _PLATFORM_H */

@@ -92,3 +92,8 @@ void platform_update_display(State * s)
     /* Present to screen now that drawing is done. */
     SDL_RenderPresent(renderer);
 }
+
+void platform_delay(uint32_t delay_ms)
+{
+    SDL_Delay(delay_ms);
+}
