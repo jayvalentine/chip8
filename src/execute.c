@@ -369,5 +369,12 @@ const execute_helper execute_lut[] =
  */
 void execute(State * s, Instruction * i)
 {
+    /* Skip this instruction if the skip flag is set. */
+    if (s->skip_next)
+    {
+        s->skip_next = false;
+        return;
+    }
+
     execute_lut[i->opcode](s, i);
 }

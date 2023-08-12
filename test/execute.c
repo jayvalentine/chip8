@@ -749,7 +749,7 @@ TEST(skip_eq_imm_false)
 
     Instruction instr;
     instr.opcode = SKIP_EQ_IMM;
-    instr.X = 0xa;
+    instr.X = 0xd;
     instr.NN = 99;
 
     execute(&state, &instr);
@@ -1712,6 +1712,26 @@ TEST(get_font_char_upper_ignored)
     execute(&state, &instr);
 
     assert_uint16(state.i, ==, 0x9b);
+
+    return MUNIT_OK;
+}
+
+TEST(skip_next)
+{
+    State state;
+
+    state.registers[0x5] = 0x42;
+    state.skip_next = true;
+
+    Instruction instr;
+    instr.opcode = SET_REG_IMM;
+    instr.X = 0x5;
+    instr.NN = 0x99;
+
+    execute(&state, &instr);
+
+    assert_uint16(0x42, ==, state.registers[0x5]);
+    assert_false(state.skip_next);
 
     return MUNIT_OK;
 }
